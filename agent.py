@@ -26,6 +26,7 @@ class Agent(object):
 		self.gas = gas
 		self.wind = wind
 		self.permits = permits 
+		self.assets = array([[nuclear, gas, wind]])
 		# self.turn = turn 
 
 	def prodCost(self, nuclear, gas, wind):
@@ -98,11 +99,18 @@ def agent(turn, population, oppSupply, supplyEps, demandEps):
 	return agentQ
 
 
-def optmizationMatrix(*Agent):
+def optimizationMatrix(*Agent):
 	types = ['nuclear', 'gas', 'wind']
 	numRow = 0
 	numAgent = 0
 	i = 0
+
+	costGas = 3
+	costNuc = 4
+	costWind = 5
+
+	utilization = array([])
+	cost = array([costNuc, costGas, costWind])
 
 	# find the maximum number of assets
 	for agent in Agent:
@@ -117,9 +125,12 @@ def optmizationMatrix(*Agent):
 	
 	# add padding so everyone has the same number of assets
 	for agent in Agent:
+		utilization = vstack((utilization, [getattr(agent, nuclear), getattr(agent, gas), getattr(agent, wind)]))
+		cost = hstack(cost, cost)
+
 		for t in types:
 			num = getattr(agent, t)
-			if num == numRow:
+			if num == num`Row:
 				supplyMatrix[:, i] = range(0, num + 1) #+1 range stops at x-1
 
 			elif num < numRow:
@@ -129,10 +140,6 @@ def optmizationMatrix(*Agent):
 				print('ERROR: the number of rows counter broke')
 
 			i  = i + 1 
+
 	
-	return supplyMatrix
-
-
-
-
-
+	return supplyMatrix, utilization, cost

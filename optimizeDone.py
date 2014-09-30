@@ -11,11 +11,11 @@
 from numpy import *
 import time
 
-def optimize(matrix, costFun, demand, maxIter):
+def optimize(matrix, costFun, utilizationMatrix, demand, maxIter):
 	t = time.time()
 	[m, n] = shape(matrix)
-	minCost = zeros((maxIter, n))
-	optimalCombo = zeros((1,n))
+	maxUtilityCombo = zeros((maxIter,n))
+	maxUtilityScalar = zeros((maxIter, 1))
 
 	for i in xrange(0, maxIter):
 		[m, n] = shape(matrix) # number of rows changes with each iteration
@@ -39,6 +39,7 @@ def optimize(matrix, costFun, demand, maxIter):
 	#	print('\n')   
 	#	print(matrix)	
 	#	print('\n')
+
 		# check to see if the total supply is greater than equal to demand	
 		deleteRow = []
 		for k in xrange(0,m):
@@ -49,25 +50,25 @@ def optimize(matrix, costFun, demand, maxIter):
 				pass
 
 		matrix = delete(matrix, deleteRow, 0)
-		# multiply the matrix by the cost function
-		cost = dot(matrix, costFun.transpose())
+
+		# multiply the matrix by the utility function
+		utility = ( 2* dot( ((utilizationMatrix - matrix) / utilizationMatrix), ones((n,n)) )
+		 + .8* dot(matrix, costFun))
 		
-		# find minimum cost 
-		minCombo = cost.argmin()
+		# find max array position of max utility 
+		maxCombo = utility.argmax()
 
 		# append the minimum combo to the master set outside itereative loop
-		minCost[i, :] = matrix[minCombo, :]
+		maxUtilityCombo[i, :] = matrix[maxCombo, :]
+		maxUtilityScalar[0, i] = utility[maxCombo]
 
 	# after the maximum amount of shifts has occured, find the lowest cost combo
-	cost = zeros((maxIter, n))
-	cost = dot(minCost, costFun.transpose())
-	minCombo = minCost.argmin()
-#	print(minCombo)
-	
-	optimalCombo = minCost[minCombo, :]
+	maximumU = maxUtilityScalar.argmax()
+
+	MaxU = maxUtilityScalar[maximumU]
+	optimalCombo = minCost[maximumU, :]
+
 	print(time.time() - t)
-	return optimalCombo
+	return optimalCombo, maxU, 
 
-		 		
-
-
+		 	
