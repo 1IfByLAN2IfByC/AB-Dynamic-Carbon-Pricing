@@ -1,0 +1,9 @@
+from numpy import *
+import agent
+import optimizeDone
+suz = agent.Agent('Suz', 10, 3, 5, 2)
+michael = agent.Agent('Michael', 10, 5, 12, 2)
+
+supply, utility, cost= agent.optimizationMatrix(michael, suz)
+
+optimizeDone.optimize(supply, cost, utility, 5, 5, 10)

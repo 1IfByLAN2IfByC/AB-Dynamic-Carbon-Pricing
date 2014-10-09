@@ -66,7 +66,7 @@ class Agent(object):
 
 	#def CO2gen(self, nuclear, wind, 
 
-def agent(turn, population, oppSupply, supplyEps, demandEps):
+def agent(turn, population, supplyEps, demandEps):
 
 	numDemand = 10
 	carryCap = 100
@@ -76,8 +76,8 @@ def agent(turn, population, oppSupply, supplyEps, demandEps):
 	# create a bunch of stochiastic population growth models
 	growthModels = zeros((carryCap, numDemand))
 	TOI = []
-	for i in xrange(0, numDemand-1):
-		growthModels[:, i:(i+1)] = pG(carryCap, .5, 1)
+	for i in xrange(0, numDemand-2):
+		growthModels[:, i:(i+1)] = pG.simDSLogistic(carryCap, .5, 1)
 		# interpolate for time of interest 
 		TOI.append = interp(turn, growthModels[:, i], growthModels[:,i+1])
 
@@ -91,12 +91,9 @@ def agent(turn, population, oppSupply, supplyEps, demandEps):
 	Q = sym.symbols('Q')
 
 	eqQ = [sym.solve(supply - D, Q) for D in demand]
+	eqP = [supply(EQ) for EQ in eqQ]
 
-	# find optimal agent output from subtracting opponent's expected supply from the eqQ 
-	agentQ = [q[0] - oppSupply for q in eqQ] 	# slight hackery here. eqQ is a list-in-list? 
-	
-	
-	return agentQ
+	return eqQ, eqP
 
 
 def optimizationMatrix(*Agent):
@@ -110,7 +107,7 @@ def optimizationMatrix(*Agent):
 	costWind = 5
 
 	utilization = array([])
-	cost = array([costNuc, costGas, costWind])
+	cost = array([])
 
 	# find the maximum number of assets
 	for agent in Agent:
@@ -125,12 +122,11 @@ def optimizationMatrix(*Agent):
 	
 	# add padding so everyone has the same number of assets
 	for agent in Agent:
-		utilization = vstack((utilization, [getattr(agent, nuclear), getattr(agent, gas), getattr(agent, wind)]))
-		cost = hstack(cost, cost)
-
+		utilization = hstack((utilization, [getattr(agent, 'nuclear'), getattr(agent, 'gas'), getattr(agent, 'wind')]))
+		cost = hstack((cost, [costNuc, costGas, costWind]))
 		for t in types:
 			num = getattr(agent, t)
-			if num == num`Row:
+			if num == numRow:
 				supplyMatrix[:, i] = range(0, num + 1) #+1 range stops at x-1
 
 			elif num < numRow:
@@ -141,5 +137,8 @@ def optimizationMatrix(*Agent):
 
 			i  = i + 1 
 
-	
+	# turn utility vector into a matrix
+	utilization = ones((numRow + 1, numAgent*len(types))) * utilization
+
 	return supplyMatrix, utilization, cost
+
