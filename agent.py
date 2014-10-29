@@ -19,9 +19,8 @@ class Agent(object):
 	""" name, quantity supplied, nuclear, gas, wind, turn)"""
 	
 
-	def __init__(self, name, Qsupplied, nuclear, gas, wind, permits=0.0):
+	def __init__(self, name, nuclear, gas, wind, permits=0.0):
 		self.name = name
-		self.Q = Qsupplied
 		self.nuclear = nuclear
 		self.gas = gas
 		self.wind = wind
@@ -61,6 +60,9 @@ class Agent(object):
 
 		return assets 
 
+	def totalAssets(self):
+		return self.nuclear + self.wind + self.gas
+
 	def maxAssets(self):
 		return max(self.nuclear, self.wind, self.gas)
 
@@ -85,9 +87,9 @@ def agent(turn, population, supplyEps, demandEps):
 	demand = [demandFun.demandfun(pop, demandEps) for pop in TOI] 
 
 	# make prediction based on CO2
+
 	supply = supplyFun.supplyfun(supplyEps)
 
-		
 	Q = sym.symbols('Q')
 
 	eqQ = [sym.solve(supply - D, Q) for D in demand]

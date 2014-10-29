@@ -1,27 +1,28 @@
 #function that will use modified genetic algo to find optimas
-# inputs: 
+# inputs:
 	# matrix:
 		# rows  = all possible production values
 		# columns = player/production values
 	# cost fun = the cost functions for each production type
 	# number of iterations
-	# scalar demand 
+	# scalar demand
 
 from numpy import *
 import time
 import pdb
 import equilibrium
 import sympy as sym
-
-def optimize(matrixIN, costFun, utilizationMatrix, population, maxIter):
+def optimize(matrixIN, costFun, utilizationMatrix, totalAss, population, maxIter):
 	t = time.time()
 	[m, n] = shape(matrixIN)
 	maxUtilityCombo = zeros((maxIter,n))
 	maxUtilityScalar = zeros((maxIter, 1))
-	maxUtilization = zeros((maxIter, n))
+	maxUtilization = zeros((maxIter, 1))
+	maxRevenue = zeros((maxIter, 1))
+	numPlayers = 3
 
 	# elastiticy variables
-	deps = .3
+	deps = .1
 	seps = .2
 
 	# make deep copy of the input array for mutation
@@ -32,6 +33,17 @@ def optimize(matrixIN, costFun, utilizationMatrix, population, maxIter):
 	eqD = equilibrium.equilibrium(demand, seps)
 	Q = sym.symbols('Q')
 
+	# find the percent of total capacity each firm has
+	capShare = [i / sum(totalAss) for i in totalAss]
+	capShare = array(capShare)
+
+	def marketShareing(matrix, m, n, capShare, numPlayers):
+		percent = zeros((numPlayers, 1))
+		for P in xrange(0, numPlayers):
+			percent = sum(matrix[ (P*n/numPlayers), (P+1)*n/numPlayers])
+			percent = percent / capShare
+
+
 	for i in xrange(0, maxIter):
 		# as a check system, print the horizontal sum of the row
 		# should change every time or so
@@ -39,17 +51,17 @@ def optimize(matrixIN, costFun, utilizationMatrix, population, maxIter):
 		# print '/n'
 		[m, n] = shape(matrix) # number of rows changes with each iteration
 
-		# shift the key down 
+		# shift the key down
 		def shuffle(matrix, m, n, turn):
-			key = (turn+m)%m 
+			key = (turn+m)%m
 			# print key
 			for j in xrange(0, n):
 				shift = (key+j)%m
-				tmp = matrix[shift, j] 
+				tmp = matrix[shift, j]
 
 				if shift + 1 < m-1: # -1 because shape gives abs. not placement
-					matrix[shift, j] = matrix[ (shift+1), j] 
-					matrix[(shift+1), j] = tmp 
+					matrix[shift, j] = matrix[ (shift+1), j]
+					matrix[(shift+1), j] = tmp
 
 				else:
 					matrix[shift, j] = matrix[0, j]
@@ -62,18 +74,20 @@ def optimize(matrixIN, costFun, utilizationMatrix, population, maxIter):
 		# find aggregate supply and solve for price
 
 		supply = dot(matrix, ones((n,1)))
+		# pdb.set_trace()
 		energyPrice = [demand.evalf(subs={Q: q}) for q in supply]
 		energyPrice = array(energyPrice).reshape(m, 1)
 
 		revenue = ( supply* energyPrice ) - (dot(matrix, costFun.reshape(n,1)))
 		utilizationRate = dot(1 - ((utilizationMatrix - matrix) / utilizationMatrix), ones((n,1)))
-		variance = var(supply, 1)
-		# check to see if the total supply is greater than equal to demand	
-		# drop if the total utility is negative 
+		# pdb.set_trace()
+
+		# check to see if the total supply is greater than equal to demand
+		# drop if the total utility is negative
 		deleteRow = []
 		for k in xrange(0,m):
 			# if revenue is neg., drop combo
-			if revenue[k] <= 0: 
+			if revenue[k] <= 0:
 				deleteRow.append(k)
 			else:
 				pass
@@ -82,17 +96,21 @@ def optimize(matrixIN, costFun, utilizationMatrix, population, maxIter):
 		revenue = delete(revenue, deleteRow, 0)
 		utilizationRate = delete(utilizationRate, deleteRow, 0)
 		matrixCal = delete(matrix, deleteRow, 0)
-		# print revenue
-	
-		# check to make sure utility vector has values 
+
+		# pdb.set_trace()
+		# check to make sure utility vector has values
 		# i.e. that not all the combinations yielded negative rev.
 		try:
-			# utility = ( .5* utilizationRate + .4* (revenue))
-			
+			utility = ( .2* utilizationRate + .8* (revenue))
+			# change to incorporate variance instead of utilization rate
+			# utility = (.6 * revenue) / (.4 * variance )
+			print utility
 			maxCombo = utility.argmax()
+			print maxCombo
 			maxUtilityCombo[i, :] = matrixCal[maxCombo, :]
 			maxUtilityScalar[i, 0] = utility[maxCombo, 0]
 			maxUtilization[i, :] = utilizationRate[maxCombo, :]
+			maxRevenue[i,0] = revenue[maxCombo, 0]
 		except ValueError:
 			print 'All production combinations were dropped \n'
 			print matrix
@@ -112,11 +130,8 @@ def optimize(matrixIN, costFun, utilizationMatrix, population, maxIter):
 	print 'the market price is: {}'.format(demand.evalf(subs={Q: sum(optimalCombo)}))
 	print 'the demand is: ' + str(eqD)
 	print 'the supply is: ' + str(sum(optimalCombo))
+	print 'the maximum revenue is: {}'.format(maxRevenue)
 	print matrix
 
 
-	return maxUtilityCombo, maxUtilityScalar, eqD , maxUtilization
-
-
-
-		 	
+	return maxUtilityCombo, maxUtilityScalar, eqD , maxUtilization, maxRevenue
