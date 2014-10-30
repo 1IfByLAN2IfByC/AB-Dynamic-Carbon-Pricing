@@ -16,16 +16,24 @@ class Agent(object):
 	#	 generation assets
 	#	 associated cost function
 	#	 permits
+	#	 utility = [revenue, carbon, risk]
+	# 	 costs = [gas, nuclear, wind]
+	#	 damping factor 
 	""" name, quantity supplied, nuclear, gas, wind, turn)"""
 	
 
-	def __init__(self, name, nuclear, gas, wind, permits=0.0):
+	def __init__(self, name, nuclear, gas, wind, utility, costs, damping, permits=0.0):
 		self.name = name
 		self.nuclear = nuclear
 		self.gas = gas
 		self.wind = wind
 		self.permits = permits 
 		self.assets = array([[nuclear, gas, wind]])
+		self.utility = utility
+		self.damping = array(damping)
+		self.delta = zeros((1,0))
+		self.production = zeros((1,0))
+		self.costs = array(costs)
 		# self.turn = turn 
 
 	def prodCost(self, nuclear, gas, wind):
@@ -37,7 +45,6 @@ class Agent(object):
 		prodcost = nuclear*nuclearC + gas*gasC + wind*windC
 
 		return prodcost
-
 
 	def assetValue(self, turn, nuclear, gas, wind):
 		# define depreciation rate of each asset
@@ -65,6 +72,24 @@ class Agent(object):
 
 	def maxAssets(self):
 		return max(self.nuclear, self.wind, self.gas)
+
+	def productionUpdate(self, production):
+		self.production = append(self.production, production)
+
+	def dampingUpdate(self, turn, delta):
+		''' will update the production damping coefficient based on the 
+			delta from the previous production paths '''
+
+		# note: the division by 2 is an arbitrary scaling factor
+		self.delta = append(self.delta, delta)
+		self.damping = append(self.damping, self.delta[-1] / (
+			self.production[-1] + self.delta[-1]) / 2 )
+
+
+
+
+
+
 
 	#def CO2gen(self, nuclear, wind, 
 
@@ -104,9 +129,9 @@ def optimizationMatrix(*Agent):
 	numAgent = 0
 	i = 0
 
-	costGas = 3
-	costNuc = 4
-	costWind = 5
+	costGas = self.costs[0]
+	costNuc = self.costs[1]
+	costWind = self.costs[2]
 
 	utilization = array([])
 	cost = array([])
