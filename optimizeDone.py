@@ -12,7 +12,7 @@ import time
 import pdb
 import equilibrium
 import sympy as sym
-def optimize(matrixIN, costFun, utilizationMatrix, totalAss, population, maxIter):
+def optimize(Agent, matrixIN, costFun, utilizationMatrix, totalAss, population, maxIter):
 	t = time.time()
 	[m, n] = shape(matrixIN)
 	maxUtilityCombo = zeros((maxIter,n))
@@ -37,12 +37,13 @@ def optimize(matrixIN, costFun, utilizationMatrix, totalAss, population, maxIter
 	capShare = [i / sum(totalAss) for i in totalAss]
 	capShare = array(capShare)
 
-	def marketShareing(matrix, m, n, capShare, numPlayers):
+	def marketSharing(matrix, m, n, capShare, numPlayers):
+		numGenTypes = int(n/numPlayers)
 		percent = zeros((numPlayers, 1))
 		for P in xrange(0, numPlayers):
 			percent = sum(matrix[ (P*n/numPlayers), (P+1)*n/numPlayers])
 			percent = percent / capShare
-
+ 
 
 	for i in xrange(0, maxIter):
 		# as a check system, print the horizontal sum of the row
@@ -97,7 +98,6 @@ def optimize(matrixIN, costFun, utilizationMatrix, totalAss, population, maxIter
 		utilizationRate = delete(utilizationRate, deleteRow, 0)
 		matrixCal = delete(matrix, deleteRow, 0)
 
-		# pdb.set_trace()
 		# check to make sure utility vector has values
 		# i.e. that not all the combinations yielded negative rev.
 		try:
