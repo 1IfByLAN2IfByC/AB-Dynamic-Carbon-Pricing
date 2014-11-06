@@ -22,19 +22,23 @@ class Agent(object):
 	""" name, quantity supplied, nuclear, gas, wind, turn)"""
 	
 
-	def __init__(self, name, nuclear, gas, wind, utility, costs, damping, permits=0.0):
+	def __init__(self, name, nuclear, gas, wind, utilityCoeff, costs, damping, bank, numTurns, permits=0.0):
 		self.name = name
 		self.nuclear = nuclear
 		self.gas = gas
 		self.wind = wind
 		self.permits = permits 
 		self.assets = array([[nuclear, gas, wind]])
-		self.utility = utility
-		self.damping = array(damping)
-		self.delta = zeros((1,0))
-		self.production = zeros((1,0))
+		self.utilityCoeff = utilityCoeff
+		self.damping = array([damping])
+		self.delta = array([])
+		self.production = zeros((numTurns, 3))
 		self.costs = array(costs)
-		# self.turn = turn 
+		self.coefficents = 0.0
+		self.bank = bank
+		self.utility = array([])
+		self.production_expected = array([])
+
 
 	def prodCost(self, nuclear, gas, wind):
 		# assign per MW costs 
@@ -76,22 +80,29 @@ class Agent(object):
 	def productionUpdate(self, production):
 		self.production = append(self.production, production)
 
-	def dampingUpdate(self, turn, delta):
+	def dampingUpdate(self):
 		''' will update the production damping coefficient based on the 
-			delta from the previous production paths '''
+			delta and actual production from the previous production paths '''
 
-		# note: the division by 2 is an arbitrary scaling factor
-		self.delta = append(self.delta, delta)
-		self.damping = append(self.damping, self.delta[-1] / (
-			self.production[-1] + self.delta[-1]) / 2 )
+		alpha = zeros((1, len(self.delta)))
+		t = arange(0, len(self.delta))
+	
+		for i in xrange(0, len(self.delta)):
+			# alpha[0,i] = self.delta[i] / sum(self.production[len(self.delta)-1, :]) * (len(t) - t[i])**(-i)
+			# alpha = 10.0/ (1+exp(self.delta)) + 1
+			# alpha = .05 * self.delta[-1]**2 + 1 
+			alpha[0, i] = 1.0 / (1+.5**(-self.delta[i])) +.5 *(len(self.delta) - i)**-i
 
 
+		# if self.delta[-1] < 0:
+		# 	alpha = 1.0 / (1+exp(-self.delta[-1])) -.5
+		# elif self.delta[-1] > 0:
+		# 	alpha = 1.0 / (1+exp(-self.delta[-1])) +.5
+		# else:
+		# 	print 'it has converged'
+		# 	alpha = 1 
+		self.damping = append(self.damping, mean(alpha))
 
-
-
-
-
-	#def CO2gen(self, nuclear, wind, 
 
 def agent(turn, population, supplyEps, demandEps):
 
@@ -129,10 +140,6 @@ def optimizationMatrix(*Agent):
 	numAgent = 0
 	i = 0
 
-	costGas = self.costs[0]
-	costNuc = self.costs[1]
-	costWind = self.costs[2]
-
 	utilization = array([])
 	cost = array([])
 
@@ -150,12 +157,11 @@ def optimizationMatrix(*Agent):
 	# add padding so everyone has the same number of assets
 	for agent in Agent:
 		utilization = hstack((utilization, [getattr(agent, 'nuclear'), getattr(agent, 'gas'), getattr(agent, 'wind')]))
-		cost = hstack((cost, [costNuc, costGas, costWind]))
+		# cost = hstack((cost, [costNuc, costGas, costWind]))
 		for t in types:
 			num = getattr(agent, t)
 			if num == numRow:
 				supplyMatrix[:, i] = range(0, num + 1) #+1 range stops at x-1
-
 			elif num < numRow:
 				supplyMatrix[0:(numRow - num), i] = 0
 				supplyMatrix[(numRow - num):, i] = range(0, num +1)
@@ -167,5 +173,5 @@ def optimizationMatrix(*Agent):
 	# turn utility vector into a matrix
 	utilization = ones((numRow + 1, numAgent*len(types))) * utilization
 
-	return supplyMatrix, utilization, cost
+	return supplyMatrix, utilization
 
