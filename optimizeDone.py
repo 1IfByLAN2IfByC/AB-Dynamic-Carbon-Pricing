@@ -12,9 +12,10 @@ import time
 import pdb
 import equilibrium
 import sympy as sym
-def optimize(Agent, matrixIN, utilizationMatrix, population, numPlayers, maxIter):
+def optimize(Agent, matrixIN, utilizationMatrix, expectation, priceArray, numPlayers, maxIter):
 	t = time.time()
 	[m, n] = shape(matrixIN)
+	numGenTypes = int(n/numPlayers)
 
 	maxUtilityCombo = zeros((maxIter,n))
 	maxUtilityScalar = zeros((maxIter, 1))
@@ -33,17 +34,18 @@ def optimize(Agent, matrixIN, utilizationMatrix, population, numPlayers, maxIter
 	costFun = tile(Agent.costs, numPlayers)
 
 	# solve for demand given population
-	demand = equilibrium.demandfun(population, deps)
+	# demand = equilibrium.demandfun(population, deps)
 	# eqD = equilibrium.equilibrium(demand, seps)
-	Q = sym.symbols('Q')
+	# Q = sym.symbols('Q')
 
 	# find the percent of total capacity each firm has
 	# capShare = [i / sum(totalAss) for i in totalAss]
 	# capShare = array(capShare)
 
 	## calculate the cost for a range of supplies
-	price_supply = arange(0,100)
-	price_supply = [demand.evalf(subs={Q:ps}) for ps in price_supply]
+	# price_supply = arange(0,sum(supply[-1]), .1)
+	# price_supply = [demand.evalf(subs={Q:ps}) for ps in price_supply]
+	price_supply = priceArray
 
 	def marketSharing(matrix, m, n, capShare, numPlayers):
 		numGenTypes = int(n/numPlayers)
@@ -51,7 +53,8 @@ def optimize(Agent, matrixIN, utilizationMatrix, population, numPlayers, maxIter
 		for P in xrange(0, numPlayers):
 			percent = sum(matrix[ (P*n/numPlayers), (P+1)*n/numPlayers])
 			percent = percent / capShare
- 
+ 	
+ 	# pdb.set_trace()
 
 	for i in xrange(0, maxIter):
 		# as a check system, print the horizontal sum of the row
@@ -81,44 +84,79 @@ def optimize(Agent, matrixIN, utilizationMatrix, population, numPlayers, maxIter
 		matrix = shuffle(matrix, m, n, i)
 
 		# find aggregate supply and solve for price
-
 		supply = dot(matrix, ones((n,1)))
+		# round to 2 decimal places and multiply by 10 to get price index
+		Qsupplied = array([round(s, 2) * 10 for s in supply]).reshape(m,1)
+
 		# pdb.set_trace()
-		energyPrice = [price_supply[int(q)] for q in supply]
-		# energyPrice = [demand.evalf(subs={Q: q}) for q in supply]
+
+		energyPrice = [price_supply[int(q)] for q in Qsupplied]
 		energyPrice = array(energyPrice).reshape(m, 1)
 
-		revenue = ( supply* energyPrice ) - (dot(matrix, costFun.reshape(n,1)))
-		utilizationRate = dot(1 - ((utilizationMatrix - matrix) / utilizationMatrix), ones((n,1)))
-		# pdb.set_trace()
+		playerSupply = zeros((m, numPlayers))
+		revenueDecoupled = zeros((m, numPlayers))
 
+
+		
+		# pdb.set_trace()
+		for i in xrange(0,numPlayers):
+			begin = i*numGenTypes
+			end = begin+numGenTypes
+			if i == 0:
+				playerSupply[:,i] = sum(matrix[:, begin:end], 1)
+			else:
+				playerSupply[:,i] = sum(matrix[:, begin:end], 1)/ expectation
+				matrix[:,begin: end] = matrix[:, begin:end] / expectation 
+
+			revenueDecoupled[:, i] = list(playerSupply[:,i].reshape(m,1) * energyPrice - (dot(matrix[:, begin:end], costFun[begin:end])).reshape(13,1))
+			
+		# revenue = ( supply* energyPrice ) - (dot(matrix, costFun.reshape(n,1)))
+
+		# merge the two reveuneDecoupled columns
+		revenueDecoupled = sum(revenueDecoupled, 1).reshape(m,1)
+		utilizationRate = dot(1 - ((utilizationMatrix - matrix) / utilizationMatrix), ones((n,1)))
+
+
+		pdb.set_trace()
 		# check to see if the total supply is greater than equal to demand
 		# drop if the total utility is negative
 		deleteRow = []
 		for k in xrange(0,m):
 			# if revenue is neg., drop combo
-			if revenue[k] <= 0:
+			if revenueDecoupled[k] <= 0:
 				deleteRow.append(k)
 			else:
 				pass
 
 		# drop all the combinations that coincide with negative revenue
-		revenue = delete(revenue, deleteRow, 0)
+		# revenue = delete(revenue, deleteRow, 0)
 		utilizationRate = delete(utilizationRate, deleteRow, 0)
 		matrixCal = delete(matrix, deleteRow, 0)
+		revenueDecoupled = delete(revenueDecoupled, deleteRow, 0)
+
+		for i in xrange(0, numPlayers):
+			if i !=0:
+				begin = i*numGenTypes
+				end = begin+numGenTypes
+				matrix[:,begin: end] = matrix[:, begin:end] * expectation
+			else:
+				pass
 
 		# check to make sure utility vector has values
 		# i.e. that not all the combinations yielded negative rev.
 		try:
-			utility = (Agent.utilityCoeff[1]*utilizationRate*energyPrice[0] +  Agent.utilityCoeff[0]*revenue)
+			# utility = (Agent.utilityCoeff[1]*utilizationRate*energyPrice[0]) +  (Agent.utilityCoeff[0]*revenueDecoupled[:,0] 
+			# 	+ Agent.utilityCoeff[0]*expectation*revenueDecoupled[:,1]).reshape(len(utilizationRate),1)
+			utility = (Agent.utilityCoeff[1]*utilizationRate * mean(energyPrice) +(Agent.utilityCoeff[0]*revenueDecoupled))
 			maxCombo = utility.argmax()
 			maxUtilityCombo[i, :] = matrixCal[maxCombo, :]
 			maxUtilityScalar[i, 0] = utility[maxCombo, 0]
 			maxUtilization[i, :] = utilizationRate[maxCombo, :]
-			maxRevenue[i,0] = revenue[maxCombo, 0]
+			maxRevenue[i,0] = revenueDecoupled[maxCombo, 0]
 		except ValueError:
-			print 'All production combinations were dropped \n'
-			print matrix
+			# print 'All production combinations were dropped \n'
+			# print matrix
+			pass
 		else:
 			pass
 

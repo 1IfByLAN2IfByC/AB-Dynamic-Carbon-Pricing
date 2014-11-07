@@ -38,6 +38,8 @@ class Agent(object):
 		self.bank = bank
 		self.utility = array([])
 		self.production_expected = array([])
+		self.supply = array([])
+		self.utilization = array([])
 
 
 	def prodCost(self, nuclear, gas, wind):
@@ -83,16 +85,18 @@ class Agent(object):
 	def dampingUpdate(self):
 		''' will update the production damping coefficient based on the 
 			delta and actual production from the previous production paths '''
+		# if len(self.delta) > 2:
 
-		alpha = zeros((1, len(self.delta)))
-		t = arange(0, len(self.delta))
+		#YOU WERE STONED AND CHANGED THIS PART TO BE BACKWARDS
+		if abs(self.damping[-1] - 1) < .1 and self.delta[-1] > 0:
+			diff = 1 - self.damping[-1] 
+			alpha = self.damping[-1] - (diff / 2)
+		elif abs(self.damping[-1] - 1) < .1 and self.delta[-1] < 0:
+			diff = 1 - self.damping[-1] 
+			alpha = self.damping[-1] + (diff / 2)
+		else:	
+			alpha = 1. / (1.0 + pow(.9, -(self.delta[-1]))) + .5
 	
-		for i in xrange(0, len(self.delta)):
-			# alpha[0,i] = self.delta[i] / sum(self.production[len(self.delta)-1, :]) * (len(t) - t[i])**(-i)
-			# alpha = 10.0/ (1+exp(self.delta)) + 1
-			# alpha = .05 * self.delta[-1]**2 + 1 
-			alpha[0, i] = 1.0 / (1+.5**(-self.delta[i])) +.5 *(len(self.delta) - i)**-i
-
 
 		# if self.delta[-1] < 0:
 		# 	alpha = 1.0 / (1+exp(-self.delta[-1])) -.5
@@ -101,7 +105,7 @@ class Agent(object):
 		# else:
 		# 	print 'it has converged'
 		# 	alpha = 1 
-		self.damping = append(self.damping, mean(alpha))
+		self.damping = append(self.damping, alpha)
 
 
 def agent(turn, population, supplyEps, demandEps):

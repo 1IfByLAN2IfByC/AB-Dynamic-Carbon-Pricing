@@ -9,11 +9,11 @@ reload(agent)
 reload(optimizeDone)
 
 numPlayers = 2 
-numTurns = 10
+numTurns = 20
 numGenTypes = 3
 deps = .1
 population = 10
-numIters = 100
+numIters = 200
 
 
 Q = zeros((1, numTurns))
@@ -21,11 +21,27 @@ Q = zeros((1, numTurns))
 # agent = __(self, name, nuclear, gas, wind, utility, costs, damping, bank, permits=0.0):
 # utility is given in the the form: array([revenue, utilization, emissions]) with sum(utility) = 1 
 # costs are given in the form: array([gas, nuclear, wind])
-suz = agent.Agent('Suz', 10, 3, 5, array([.2, .6, .2]), array([3.0, 4.0, 5.0]),  1, 0, numTurns)
+opp = agent.Agent('opp',         10, 3, 5, array([.2, .6, .2]), array([3.0, 4.0, 5.0]),  .7, 0, numTurns)
 michael = agent.Agent('Michael', 10, 5, 12, array([.6, .3, .1]), array([2.8, 4.2, 10.0]), .7, 0, numTurns)
 
-agents = [suz, michael]
-supply, utilization= agent.optimizationMatrix(michael, suz)
+agents = [opp, michael]
+# for A in agents:
+# 	A.supply, A.utilization = agent.optimizationMatrix()
+# supply, utilization= agent.optimizationMatrix(michael, opp)
+
+# pdb.set_trace()
+opp.supply, opp.utilization = agent.optimizationMatrix(opp, michael)
+michael.supply, michael.utilization = agent.optimizationMatrix(michael, opp)
+
+## FIND PRICES BY SOLVING THE DEMAND CURVE AT .1 INTERVALS
+demand = equilibrium.demandfun(population, deps)
+q = sym.symbols('Q')
+price_supply = arange(0,sum(opp.supply[-1]*3), .1)
+price_supply = [demand.evalf(subs={q:ps}) for ps in price_supply]
+
+## initialize production
+i =0
+Q_actual = zeros((1, numPlayers*numGenTypes))
 
 for k in xrange(0, numTurns):
 	print 'Begin turn %s' % k
@@ -36,10 +52,10 @@ for k in xrange(0, numTurns):
 	# optimize(Agent, matrixIN, utilizationMatrix, population, numPlayers, maxIter):
 	i = 0
 	for A in agents:
-		production, utility = optimizeDone.optimize(A, supply, utilization, population, numPlayers, numIters)
+		production, utility = optimizeDone.optimize(A, A.supply, A.utilization, A.damping[k], price_supply, numPlayers, numIters)
 		# A.production[k, :] = production[i*3: (i*numGenTypes)+3 ]*A.damping[-1]
-		A.production[k, :] = production[i*3: (i*numGenTypes)+3 ]*A.damping[-1]
-
+		# A.production[k, :] = production[i*3s : (i*numGenTypes)+3 ]
+		A.production[k, :] = production[0 : 3]
 		A.utility = append(A.utility, utility)
 		Q_actual[0, i*3 : (i*numGenTypes)+3] = A.production[k, :]
 		# print sum(production)
@@ -51,18 +67,16 @@ for k in xrange(0, numTurns):
 	Q_actual = sum(Q_actual)
 
 	# find market price at actual supply and see profits
-	demand = equilibrium.demandfun(population, deps)
-	q = sym.symbols('Q')
+	# demand = equilibrium.demandfun(population, deps)
+	# q = sym.symbols('Q')
 	P_actual = demand.evalf(subs={q:Q_actual})
 
 	Q[0, k] = Q_actual
 
-
-	pdb.set_trace()
 	for A in agents:
 		A.bank = A.bank + sum(A.production*P_actual - A.production-A.costs)
 		# print (Q_actual - A.production_expected[-1])
-		A.delta = append(A.delta, (-Q_actual + A.damping[-1]*A.production_expected[-1]))
+		A.delta = append(A.delta, (-Q_actual + A.production_expected[k]))
 
 		A.dampingUpdate()
 
@@ -74,23 +88,30 @@ for A in agents:
 
 t = arange(0, numTurns)
 T = arange(0, numTurns+1)
-plt.subplot(3,1,1)
-plt.plot(t, michael.delta, label='Michael delta')
-plt.plot(t, suz.delta, label='Suz delta')
-plt.legend()
-plt.subplot(3,1,2)
-plt.plot(T, michael.damping, label = 'Michael damping')
-plt.plot(T, suz.damping, label='Suz damping')
+
+fig = plt.figure()
+plt1 = fig.add_subplot(3,1,1)
+plt1.plot(t, michael.delta, label='Michael delta')
+plt1.plot(t, opp.delta, label='opp delta')
+plt1.legend()
+
+plt2 =fig.add_subplot(3,1,2)
+plt2.plot(T, michael.damping, label = 'Michael damping')
+plt2.plot(T, opp.damping, label='opp damping')
+plt2.plot(T, ones((len(T), 1)))
+plt2.legend()
 
 
-plt.subplot(3,1,3)
-plt.plot(t, sum(michael.production, 1), label='Michael Production')
-plt.plot(t, Q.transpose(), label='Total Production')
-plt.plot(t, michael.production_expected*michael.damping[0:-1], label='Michael mod. expecations')
+plt3 = fig.add_subplot(3,1,3)
+plt3.plot(t, sum(michael.production, 1), label='Michael Production')
+plt3.plot(t, sum(opp.production, 1), label='opp Production')
+plt3.plot(t, Q.transpose(), label='Total Production')
+plt3.plot(t, michael.production_expected, label='Michael mod. expecations')
+plt3.plot(t, opp.production_expected, label='opp mod. expecations')
 
-plt.legend()
+plt3.legend()
 
-plt.show()
+fig.show()
 
 
 
