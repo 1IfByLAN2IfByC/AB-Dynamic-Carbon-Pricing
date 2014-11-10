@@ -46,15 +46,9 @@ def optimize(Agent, matrixIN, utilizationMatrix, expectation, priceArray, numPla
 	# price_supply = arange(0,sum(supply[-1]), .1)
 	# price_supply = [demand.evalf(subs={Q:ps}) for ps in price_supply]
 	price_supply = priceArray
-
-	def marketSharing(matrix, m, n, capShare, numPlayers):
-		numGenTypes = int(n/numPlayers)
-		percent = zeros((numPlayers, 1))
-		for P in xrange(0, numPlayers):
-			percent = sum(matrix[ (P*n/numPlayers), (P+1)*n/numPlayers])
-			percent = percent / capShare
  	
- 	# pdb.set_trace()
+	oppProductionDamping = ones((n, 1))
+	oppProductionDamping[numGenTypes:, 0] = oppProductionDamping[numGenTypes:, 0] *expectation
 
 	for i in xrange(0, maxIter):
 		# as a check system, print the horizontal sum of the row
@@ -81,7 +75,11 @@ def optimize(Agent, matrixIN, utilizationMatrix, expectation, priceArray, numPla
 
 			return matrix
 
+		# pdb.set_trace()
 		matrix = shuffle(matrix, m, n, i)
+		matrix = matrix*oppProductionDamping.transpose()
+		utilizationMatrix = utilizationMatrix * oppProductionDamping.transpose()
+		# pdb.set_trace()
 
 		# find aggregate supply and solve for price
 		supply = dot(matrix, ones((n,1)))
@@ -97,27 +95,29 @@ def optimize(Agent, matrixIN, utilizationMatrix, expectation, priceArray, numPla
 		revenueDecoupled = zeros((m, numPlayers))
 
 
-		
 		# pdb.set_trace()
-		for i in xrange(0,numPlayers):
-			begin = i*numGenTypes
-			end = begin+numGenTypes
-			if i == 0:
-				playerSupply[:,i] = sum(matrix[:, begin:end], 1)
-			else:
-				playerSupply[:,i] = sum(matrix[:, begin:end], 1)/ expectation
-				matrix[:,begin: end] = matrix[:, begin:end] / expectation 
+		# for i in xrange(0,numPlayers):
+		# 	begin = i*numGenTypes
+		# 	end = begin+numGenTypes
+		# 	if i == 0:
+		# 		playerSupply[:,i] = sum(matrix[:, begin:end], 1)
+		# 	else:
+		# 		playerSupply[:,i] = sum(matrix[:, begin:end], 1)/ expectation
+		# 		matrix[:,begin: end] = matrix[:, begin:end] / expectation 
 
-			revenueDecoupled[:, i] = list(playerSupply[:,i].reshape(m,1) * energyPrice - (dot(matrix[:, begin:end], costFun[begin:end])).reshape(13,1))
-			
-		# revenue = ( supply* energyPrice ) - (dot(matrix, costFun.reshape(n,1)))
+		# 	revenueDecoupled[:, i] = list(playerSupply[:,i].reshape(m,1) * energyPrice - (dot(matrix[:, begin:end], costFun[begin:end])).reshape(13,1))
+		
+
+
+
+		revenueDecoupled = ( supply* energyPrice ) - (dot(matrix, costFun.reshape(n,1)))
 
 		# merge the two reveuneDecoupled columns
-		revenueDecoupled = sum(revenueDecoupled, 1).reshape(m,1)
+		# revenueDecoupled = sum(revenueDecoupled, 1).reshape(m,1)
 		utilizationRate = dot(1 - ((utilizationMatrix - matrix) / utilizationMatrix), ones((n,1)))
 
 
-		pdb.set_trace()
+		# pdb.set_trace()
 		# check to see if the total supply is greater than equal to demand
 		# drop if the total utility is negative
 		deleteRow = []
@@ -134,20 +134,23 @@ def optimize(Agent, matrixIN, utilizationMatrix, expectation, priceArray, numPla
 		matrixCal = delete(matrix, deleteRow, 0)
 		revenueDecoupled = delete(revenueDecoupled, deleteRow, 0)
 
-		for i in xrange(0, numPlayers):
-			if i !=0:
-				begin = i*numGenTypes
-				end = begin+numGenTypes
-				matrix[:,begin: end] = matrix[:, begin:end] * expectation
-			else:
-				pass
+		# for i in xrange(0, numPlayers):
+		# 	if i !=0:
+		# 		begin = i*numGenTypes
+		# 		end = begin+numGenTypes
+		# 		matrix[:,begin: end] = matrix[:, begin:end] * expectation
+		# 	else:
+				# pass
 
+		# pdb.set_trace()
+		matrix = matrix/oppProductionDamping.transpose()
+		utilizationMatrix = utilizationMatrix/oppProductionDamping.transpose()
 		# check to make sure utility vector has values
 		# i.e. that not all the combinations yielded negative rev.
 		try:
 			# utility = (Agent.utilityCoeff[1]*utilizationRate*energyPrice[0]) +  (Agent.utilityCoeff[0]*revenueDecoupled[:,0] 
 			# 	+ Agent.utilityCoeff[0]*expectation*revenueDecoupled[:,1]).reshape(len(utilizationRate),1)
-			utility = (Agent.utilityCoeff[1]*utilizationRate * mean(energyPrice) +(Agent.utilityCoeff[0]*revenueDecoupled))
+			utility = (Agent.utilityCoeff[1]*utilizationRate * energyPrice +(Agent.utilityCoeff[0]*revenueDecoupled))
 			maxCombo = utility.argmax()
 			maxUtilityCombo[i, :] = matrixCal[maxCombo, :]
 			maxUtilityScalar[i, 0] = utility[maxCombo, 0]
@@ -160,6 +163,9 @@ def optimize(Agent, matrixIN, utilizationMatrix, expectation, priceArray, numPla
 		else:
 			pass
 
+		
+	# pdb.set_trace()
+
 	# after the maximum amount of shifts has occured, find the lowest cost combo
 	maximumU = maxUtilityScalar.argmax()
 	# print maximumU
@@ -167,6 +173,7 @@ def optimize(Agent, matrixIN, utilizationMatrix, expectation, priceArray, numPla
 	maxU = maxUtilityScalar[maximumU, 0]
 	optimalCombo = maxUtilityCombo[maximumU, :]
 
+	# pdb.set_trace()
 	# print(time.time() - t)
 	# print 'optimal combo is: ' + str(optimalCombo)
 	# print 'the max utility is: ' + str(maxU)

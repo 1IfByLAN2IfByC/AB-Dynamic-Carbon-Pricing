@@ -9,6 +9,7 @@ import demandFun, supplyFun
 import sympy as sym
 from numpy import *
 import populationGrowth as pG
+import matplotlib.pylab as plt
 
 class Agent(object):
 	# class for each power plant agent. 
@@ -88,14 +89,14 @@ class Agent(object):
 		# if len(self.delta) > 2:
 
 		#YOU WERE STONED AND CHANGED THIS PART TO BE BACKWARDS
-		if abs(self.damping[-1] - 1) < .1 and self.delta[-1] > 0:
-			diff = 1 - self.damping[-1] 
-			alpha = self.damping[-1] - (diff / 2)
-		elif abs(self.damping[-1] - 1) < .1 and self.delta[-1] < 0:
-			diff = 1 - self.damping[-1] 
-			alpha = self.damping[-1] + (diff / 2)
-		else:	
-			alpha = 1. / (1.0 + pow(.9, -(self.delta[-1]))) + .5
+		# if abs(self.damping[-1] - 1) < .01 and self.delta[-1] > 0:
+		# 	diff = 1 - self.damping[-1] 
+		# 	alpha = self.damping[-1] - (diff / 2)
+		# elif abs(self.damping[-1] - 1) < .01 and self.delta[-1] < 0:
+		# 	diff = 1 - self.damping[-1] 
+		# 	alpha = self.damping[-1] + (diff / 2)
+		# else:	
+		alpha = 3.0 / (1 + pow(.9, -(self.delta[-1]))) - .5
 	
 
 		# if self.delta[-1] < 0:
@@ -106,6 +107,19 @@ class Agent(object):
 		# 	print 'it has converged'
 		# 	alpha = 1 
 		self.damping = append(self.damping, alpha)
+
+	def fitProperty(self, arg):
+
+		T = arange(0, len(arg))
+		par = polyfit(T, arg, 1)
+
+		slope = par[0][0]
+		intercept = par[0][1]
+
+		y = [slope*t + intercept for t in T]
+
+		plt.plot(T, y)
+		plt.show()
 
 
 def agent(turn, population, supplyEps, demandEps):

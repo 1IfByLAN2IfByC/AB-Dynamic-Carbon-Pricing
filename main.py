@@ -13,7 +13,7 @@ numTurns = 20
 numGenTypes = 3
 deps = .1
 population = 10
-numIters = 200
+numIters = 500
 
 
 Q = zeros((1, numTurns))
@@ -21,8 +21,8 @@ Q = zeros((1, numTurns))
 # agent = __(self, name, nuclear, gas, wind, utility, costs, damping, bank, permits=0.0):
 # utility is given in the the form: array([revenue, utilization, emissions]) with sum(utility) = 1 
 # costs are given in the form: array([gas, nuclear, wind])
-opp = agent.Agent('opp',         10, 3, 5, array([.2, .6, .2]), array([3.0, 4.0, 5.0]),  .7, 0, numTurns)
-michael = agent.Agent('Michael', 10, 5, 12, array([.6, .3, .1]), array([2.8, 4.2, 10.0]), .7, 0, numTurns)
+opp = agent.Agent('opp',         10, 3, 5, array([.6, .2, .2]), array([3.0, 4.0, 5.0]),  .7, 0, numTurns)
+michael = agent.Agent('Michael', 10, 3, 5, array([.2, .6, .2]), array([3.0, 4.0, 5.0]), .7, 0, numTurns)
 
 agents = [opp, michael]
 # for A in agents:
@@ -51,8 +51,14 @@ for k in xrange(0, numTurns):
 	## cycle through each player and see what their production is
 	# optimize(Agent, matrixIN, utilizationMatrix, population, numPlayers, maxIter):
 	i = 0
+	# pdb.set_trace()
 	for A in agents:
-		production, utility = optimizeDone.optimize(A, A.supply, A.utilization, A.damping[k], price_supply, numPlayers, numIters)
+		# pdb.set_trace()
+		try:
+			production, utility = optimizeDone.optimize(A, A.supply, A.utilization, A.damping[k]+A.damping[k-1], price_supply, numPlayers, numIters)
+		except IndexError:
+			production, utility = optimizeDone.optimize(A, A.supply, A.utilization, A.damping[k-1], price_supply, numPlayers, numIters)
+
 		# A.production[k, :] = production[i*3: (i*numGenTypes)+3 ]*A.damping[-1]
 		# A.production[k, :] = production[i*3s : (i*numGenTypes)+3 ]
 		A.production[k, :] = production[0 : 3]
@@ -65,6 +71,8 @@ for k in xrange(0, numTurns):
 
 	## calculate actual aggragate supply and CO2 levels
 	Q_actual = sum(Q_actual)
+
+	# pdb.set_trace()
 
 	# find market price at actual supply and see profits
 	# demand = equilibrium.demandfun(population, deps)
