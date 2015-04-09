@@ -1,0 +1,14 @@
+\contentsline {section}{\numberline {1}Electric Production}{3}
+\contentsline {section}{\numberline {2}Model Formulation}{3}
+\contentsline {subsection}{\numberline {2.1}Agent Characteristics}{4}
+\contentsline {subsection}{\numberline {2.2}Optimal Production}{4}
+\contentsline {subsubsection}{\numberline {2.2.1}Expected Revenue}{4}
+\contentsline {subsubsection}{\numberline {2.2.2}Expected Carbon Emissions}{5}
+\contentsline {subsubsection}{\numberline {2.2.3}Utilization Rate}{5}
+\contentsline {subsection}{\numberline {2.3}Cost Structure}{5}
+\contentsline {subsection}{\numberline {2.4}Modifying Expectations}{5}
+\contentsline {section}{\numberline {3}Achieved Results}{6}
+\contentsline {subsection}{\numberline {3.1}Handling Market Expansion}{6}
+\contentsline {subsection}{\numberline {3.2}Effects of Taxation on Producers of Different Scales}{7}
+\contentsline {section}{\numberline {4}Conclusions}{7}
+\contentsline {section}{\numberline {A}WireFrame}{8}

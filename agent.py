@@ -1,3 +1,6 @@
+# modified 4-9-15 
+
+
 # function that controls:
 #
 # inputs:
@@ -23,7 +26,7 @@ class Agent(object):
 	""" name, quantity supplied, nuclear, gas, wind, turn)"""
 	
 
-	def __init__(self, name, nuclear, gas, wind, utilityCoeff, costs, damping, bank, numTurns, permits=0.0):
+	def __init__(self, name, nuclear, gas, wind, utilityCoeff, costs, bank, numTurns, permits=0.0):
 		self.name = name
 		self.nuclear = nuclear
 		self.gas = gas
@@ -31,16 +34,24 @@ class Agent(object):
 		self.permits = permits 
 		self.assets = array([[nuclear, gas, wind]])
 		self.utilityCoeff = utilityCoeff
-		self.damping = array([damping])
-		self.delta = array([])
+		self.delta = zeros((numTurns, 1))
 		self.production = zeros((numTurns, 3))
 		self.costs = array(costs)
-		self.coefficents = 0.0
 		self.bank = bank
-		self.utility = array([])
-		self.production_expected = array([])
-		self.supply = array([])
+		self.utility = zeros((numTurns, 1))
+		self.production_expected = zeros((numTurns, 1))
+		self.supply = zeros((numTurns, 1))
 		self.utilization = array([])
+		self.utilizationRate =  zeros((numTurns, 1))
+		self.oppProduction = zeros((numTurns, 1))
+		self.damping = zeros((numTurns, 1))
+		self.CO2_oppExpected = zeros((numTurns, 1))
+		self.CO2 = zeros((numTurns, 1))
+		self.carbon = array([0, 1, 0])
+		self.zeta = zeros((numTurns, 1))
+		self.revenue = zeros((numTurns, 1))
+
+		self.turn = 0
 
 
 	def prodCost(self, nuclear, gas, wind):
@@ -74,6 +85,16 @@ class Agent(object):
 
 		return assets 
 
+	def utilityCalc(self, revenue, utilization, CO2, energyPrice):
+		try:
+			# for when used to evaluate list of array choices
+			# optimalDone.py
+			return (self.utilityCoeff[1]*utilization - self.utilityCoeff[2]*CO2.reshape(len(CO2), 1))* energyPrice +(self.utilityCoeff[0]*revenue)
+		except (TypeError, AttributeError) :
+			# for when utility calc is used to evaluate actual results
+			# main.py
+			return self.utilityCoeff[1]*utilization - self.utilityCoeff[2]*CO2* energyPrice + self.utilityCoeff[0]*revenue
+	
 	def totalAssets(self):
 		return self.nuclear + self.wind + self.gas
 
@@ -83,30 +104,26 @@ class Agent(object):
 	def productionUpdate(self, production):
 		self.production = append(self.production, production)
 
+	def turnUpdate(self):
+		self.turn = self.turn + 1 
+
 	def dampingUpdate(self):
 		''' will update the production damping coefficient based on the 
 			delta and actual production from the previous production paths '''
-		# if len(self.delta) > 2:
-
-		#YOU WERE STONED AND CHANGED THIS PART TO BE BACKWARDS
-		# if abs(self.damping[-1] - 1) < .01 and self.delta[-1] > 0:
-		# 	diff = 1 - self.damping[-1] 
-		# 	alpha = self.damping[-1] - (diff / 2)
-		# elif abs(self.damping[-1] - 1) < .01 and self.delta[-1] < 0:
-		# 	diff = 1 - self.damping[-1] 
-		# 	alpha = self.damping[-1] + (diff / 2)
-		# else:	
-		alpha = 3.0 / (1 + pow(.9, -(self.delta[-1]))) - .5
-	
-
-		# if self.delta[-1] < 0:
-		# 	alpha = 1.0 / (1+exp(-self.delta[-1])) -.5
-		# elif self.delta[-1] > 0:
-		# 	alpha = 1.0 / (1+exp(-self.delta[-1])) +.5
+		
+		# if abs(self.delta[self.turn]) < 1.5 and self.turn > 2:
+		# 	alpha = (self.damping[self.turn-1, 0] + self.damping[self.turn - 2, 0]) / 2.0
 		# else:
-		# 	print 'it has converged'
-		# 	alpha = 1 
-		self.damping = append(self.damping, alpha)
+		# 	alpha = 1.0 / (1 + pow(1.1, (self.delta[self.turn, 0]))) + .5
+		alpha = 1.0 / (1 + pow(1.1, (self.delta[self.turn, 0]))) + .5
+		self.damping[self.turn, 0] = alpha
+
+
+	def CO2damping(self, CO2actual):
+		zeta = 1.0 / (1 + pow(1.1, ( (self.CO2_oppExpected - CO2actual) )[self.turn, 0])) + .5
+
+		self.zeta[self.turn, 0] = zeta 
+
 
 	def fitProperty(self, arg):
 
@@ -120,6 +137,8 @@ class Agent(object):
 
 		plt.plot(T, y)
 		plt.show()
+
+	# def expcectation(self, oppProduction, numGenTypes):
 
 
 def agent(turn, population, supplyEps, demandEps):

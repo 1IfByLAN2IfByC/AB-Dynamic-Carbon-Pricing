@@ -1,0 +1,37 @@
+\contentsline {section}{\numberline {1}Competitive Equilibrium in Electricity Markets}{1}
+\contentsline {subsection}{\numberline {1.1}Market Equilibrium}{2}
+\contentsline {subsubsection}{\numberline {1.1.1}The Asymmetric Information Problem}{2}
+\contentsline {subsection}{\numberline {1.2}Market Structure: Competitive or Oligopolistic}{3}
+\contentsline {subsection}{\numberline {1.3}Potential Models}{3}
+\contentsline {subsubsection}{\numberline {1.3.1}Argonne National Laboratory EMCAS}{4}
+\contentsline {section}{\numberline {2}Carbon Dioxide Production}{5}
+\contentsline {subsection}{\numberline {2.1}The Carbon Problem}{6}
+\contentsline {subsection}{\numberline {2.2}Efforts Towards a Carbon Tax}{7}
+\contentsline {section}{\numberline {3}Model Formulation}{7}
+\contentsline {subsection}{\numberline {3.1}Agent Characteristics}{8}
+\contentsline {subsection}{\numberline {3.2}Optimal Production}{9}
+\contentsline {subsubsection}{\numberline {3.2.1}Expected Revenue}{9}
+\contentsline {subsubsection}{\numberline {3.2.2}Expected Carbon Emissions}{10}
+\contentsline {subsubsection}{\numberline {3.2.3}Utilization Rate}{11}
+\contentsline {subsection}{\numberline {3.3}Cost Structure}{12}
+\contentsline {subsection}{\numberline {3.4}Investment}{12}
+\contentsline {subsection}{\numberline {3.5}Modifying Expectations}{13}
+\contentsline {section}{\numberline {4}Competetive Equilibrium: Achieved Results}{15}
+\contentsline {subsection}{\numberline {4.1}Handling Market Expansion}{17}
+\contentsline {subsection}{\numberline {4.2}Effects of Taxation on Producers of Different Scales}{19}
+\contentsline {section}{\numberline {5}Spatial Considerations}{20}
+\contentsline {subsection}{\numberline {5.1}Model Formulation}{21}
+\contentsline {subsubsection}{\numberline {5.1.1}Geography}{22}
+\contentsline {subsubsection}{\numberline {5.1.2}Cell Properties}{22}
+\contentsline {subsubsection}{\numberline {5.1.3}Market}{23}
+\contentsline {subsection}{\numberline {5.2}Results}{23}
+\contentsline {section}{\numberline {6}Computational Techniques}{26}
+\contentsline {section}{\numberline {7}Conclusions}{26}
+\contentsline {subsection}{\numberline {7.1}Problems with the Model}{27}
+\contentsline {subsection}{\numberline {7.2}Future Work}{28}
+\contentsline {section}{\numberline {A}WireFrame}{30}
+\contentsline {section}{\numberline {B}Levelized Costs for Power Production}{31}
+\contentsline {section}{\numberline {C}Two Players}{32}
+\contentsline {section}{\numberline {D}Three Players}{33}
+\contentsline {section}{\numberline {E}Four Players}{34}
+\contentsline {section}{\numberline {F}Five Players}{35}

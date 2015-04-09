@@ -1,0 +1,690 @@
+This is pdfTeX, Version 3.14159265-2.6-1.40.15 (TeX Live 2014) (preloaded format=pdflatex 2014.5.25)  7 APR 2015 18:20
+entering extended mode
+ restricted \write18 enabled.
+ %&-line parsing enabled.
+**"Write Up Rough Draft.tex" -recorder
+(./Write Up Rough Draft.tex
+LaTeX2e <2014/05/01>
+Babel <3.9k> and hyphenation patterns for 78 languages loaded.
+(/usr/local/texlive/2014/texmf-dist/tex/latex/base/article.cls
+Document Class: article 2007/10/19 v1.4h Standard LaTeX document class
+(/usr/local/texlive/2014/texmf-dist/tex/latex/base/size12.clo
+File: size12.clo 2007/10/19 v1.4h Standard LaTeX file (size option)
+)
+\c@part=\count79
+\c@section=\count80
+\c@subsection=\count81
+\c@subsubsection=\count82
+\c@paragraph=\count83
+\c@subparagraph=\count84
+\c@figure=\count85
+\c@table=\count86
+\abovecaptionskip=\skip41
+\belowcaptionskip=\skip42
+\bibindent=\dimen102
+)
+(/usr/local/texlive/2014/texmf-dist/tex/latex/graphics/graphicx.sty
+Package: graphicx 2014/04/25 v1.0g Enhanced LaTeX Graphics (DPC,SPQR)
+
+(/usr/local/texlive/2014/texmf-dist/tex/latex/graphics/keyval.sty
+Package: keyval 2014/05/08 v1.15 key=value parser (DPC)
+\KV@toks@=\toks14
+)
+(/usr/local/texlive/2014/texmf-dist/tex/latex/graphics/graphics.sty
+Package: graphics 2009/02/05 v1.0o Standard LaTeX Graphics (DPC,SPQR)
+
+(/usr/local/texlive/2014/texmf-dist/tex/latex/graphics/trig.sty
+Package: trig 1999/03/16 v1.09 sin cos tan (DPC)
+)
+(/usr/local/texlive/2014/texmf-dist/tex/latex/latexconfig/graphics.cfg
+File: graphics.cfg 2010/04/23 v1.9 graphics configuration of TeX Live
+)
+Package graphics Info: Driver file: pdftex.def on input line 91.
+
+(/usr/local/texlive/2014/texmf-dist/tex/latex/pdftex-def/pdftex.def
+File: pdftex.def 2011/05/27 v0.06d Graphics/color for pdfTeX
+
+(/usr/local/texlive/2014/texmf-dist/tex/generic/oberdiek/infwarerr.sty
+Package: infwarerr 2010/04/08 v1.3 Providing info/warning/error messages (HO)
+)
+(/usr/local/texlive/2014/texmf-dist/tex/generic/oberdiek/ltxcmds.sty
+Package: ltxcmds 2011/11/09 v1.22 LaTeX kernel commands for general use (HO)
+)
+\Gread@gobject=\count87
+))
+\Gin@req@height=\dimen103
+\Gin@req@width=\dimen104
+)
+(/usr/local/texlive/2014/texmf-dist/tex/latex/tools/enumerate.sty
+Package: enumerate 1999/03/05 v3.00 enumerate extensions (DPC)
+\@enLab=\toks15
+)
+(/usr/local/texlive/2014/texmf-dist/tex/latex/geometry/geometry.sty
+Package: geometry 2010/09/12 v5.6 Page Geometry
+
+(/usr/local/texlive/2014/texmf-dist/tex/generic/oberdiek/ifpdf.sty
+Package: ifpdf 2011/01/30 v2.3 Provides the ifpdf switch (HO)
+Package ifpdf Info: pdfTeX in PDF mode is detected.
+)
+(/usr/local/texlive/2014/texmf-dist/tex/generic/oberdiek/ifvtex.sty
+Package: ifvtex 2010/03/01 v1.5 Detect VTeX and its facilities (HO)
+Package ifvtex Info: VTeX not detected.
+)
+(/usr/local/texlive/2014/texmf-dist/tex/generic/ifxetex/ifxetex.sty
+Package: ifxetex 2010/09/12 v0.6 Provides ifxetex conditional
+)
+\Gm@cnth=\count88
+\Gm@cntv=\count89
+\c@Gm@tempcnt=\count90
+\Gm@bindingoffset=\dimen105
+\Gm@wd@mp=\dimen106
+\Gm@odd@mp=\dimen107
+\Gm@even@mp=\dimen108
+\Gm@layoutwidth=\dimen109
+\Gm@layoutheight=\dimen110
+\Gm@layouthoffset=\dimen111
+\Gm@layoutvoffset=\dimen112
+\Gm@dimlist=\toks16
+)
+(/usr/local/texlive/2014/texmf-dist/tex/latex/setspace/setspace.sty
+Package: setspace 2011/12/19 v6.7a set line spacing
+)
+(/usr/local/texlive/2014/texmf-dist/tex/latex/float/float.sty
+Package: float 2001/11/08 v1.3d Float enhancements (AL)
+\c@float@type=\count91
+\float@exts=\toks17
+\float@box=\box26
+\@float@everytoks=\toks18
+\@floatcapt=\box27
+)
+(/usr/local/texlive/2014/texmf-dist/tex/latex/algorithmicx/algpseudocode.sty
+Package: algpseudocode 
+
+(/usr/local/texlive/2014/texmf-dist/tex/latex/base/ifthen.sty
+Package: ifthen 2001/05/26 v1.1c Standard LaTeX ifthen package (DPC)
+)
+(/usr/local/texlive/2014/texmf-dist/tex/latex/algorithmicx/algorithmicx.sty
+Package: algorithmicx 2005/04/27 v1.2 Algorithmicx
+
+Document Style algorithmicx 1.2 - a greatly improved `algorithmic' style
+\c@ALG@line=\count92
+\c@ALG@rem=\count93
+\c@ALG@nested=\count94
+\ALG@tlm=\skip43
+\ALG@thistlm=\skip44
+\c@ALG@Lnr=\count95
+\c@ALG@blocknr=\count96
+\c@ALG@storecount=\count97
+\c@ALG@tmpcounter=\count98
+\ALG@tmplength=\skip45
+)
+Document Style - pseudocode environments for use with the `algorithmicx' style
+) (/usr/local/texlive/2014/texmf-dist/tex/latex/cleveref/cleveref.sty
+Package: cleveref 2013/12/28 v0.19 Intelligent cross-referencing
+Package cleveref Info: `algorithmicx' support loaded on input line 2939.
+)
+(/usr/local/texlive/2014/texmf-dist/tex/latex/caption/subcaption.sty
+Package: subcaption 2013/02/03 v1.1-62 Sub-captions (AR)
+
+(/usr/local/texlive/2014/texmf-dist/tex/latex/caption/caption.sty
+Package: caption 2013/05/02 v3.3-89 Customizing captions (AR)
+
+(/usr/local/texlive/2014/texmf-dist/tex/latex/caption/caption3.sty
+Package: caption3 2013/05/02 v1.6-88 caption3 kernel (AR)
+Package caption3 Info: TeX engine: e-TeX on input line 57.
+\captionmargin=\dimen113
+\captionmargin@=\dimen114
+\captionwidth=\dimen115
+\caption@tempdima=\dimen116
+\caption@indent=\dimen117
+\caption@parindent=\dimen118
+\caption@hangindent=\dimen119
+)
+\c@ContinuedFloat=\count99
+Package caption Info: float package is loaded.
+)
+\c@subfigure=\count100
+\c@subtable=\count101
+)
+(/usr/local/texlive/2014/texmf-dist/tex/latex/amsmath/amsmath.sty
+Package: amsmath 2013/01/14 v2.14 AMS math features
+\@mathmargin=\skip46
+
+For additional information on amsmath, use the `?' option.
+(/usr/local/texlive/2014/texmf-dist/tex/latex/amsmath/amstext.sty
+Package: amstext 2000/06/29 v2.01
+
+(/usr/local/texlive/2014/texmf-dist/tex/latex/amsmath/amsgen.sty
+File: amsgen.sty 1999/11/30 v2.0
+\@emptytoks=\toks19
+\ex@=\dimen120
+))
+(/usr/local/texlive/2014/texmf-dist/tex/latex/amsmath/amsbsy.sty
+Package: amsbsy 1999/11/29 v1.2d
+\pmbraise@=\dimen121
+)
+(/usr/local/texlive/2014/texmf-dist/tex/latex/amsmath/amsopn.sty
+Package: amsopn 1999/12/14 v2.01 operator names
+)
+\inf@bad=\count102
+LaTeX Info: Redefining \frac on input line 210.
+\uproot@=\count103
+\leftroot@=\count104
+LaTeX Info: Redefining \overline on input line 306.
+\classnum@=\count105
+\DOTSCASE@=\count106
+LaTeX Info: Redefining \ldots on input line 378.
+LaTeX Info: Redefining \dots on input line 381.
+LaTeX Info: Redefining \cdots on input line 466.
+\Mathstrutbox@=\box28
+\strutbox@=\box29
+\big@size=\dimen122
+LaTeX Font Info:    Redeclaring font encoding OML on input line 566.
+LaTeX Font Info:    Redeclaring font encoding OMS on input line 567.
+\macc@depth=\count107
+\c@MaxMatrixCols=\count108
+\dotsspace@=\muskip10
+\c@parentequation=\count109
+\dspbrk@lvl=\count110
+\tag@help=\toks20
+\row@=\count111
+\column@=\count112
+\maxfields@=\count113
+\andhelp@=\toks21
+\eqnshift@=\dimen123
+\alignsep@=\dimen124
+\tagshift@=\dimen125
+\tagwidth@=\dimen126
+\totwidth@=\dimen127
+\lineht@=\dimen128
+\@envbody=\toks22
+\multlinegap=\skip47
+\multlinetaggap=\skip48
+\mathdisplay@stack=\toks23
+LaTeX Info: Redefining \[ on input line 2665.
+LaTeX Info: Redefining \] on input line 2666.
+)
+(./Write Up Rough Draft.aux)
+\openout1 = `"Write Up Rough Draft.aux"'.
+
+LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 13.
+LaTeX Font Info:    ... okay on input line 13.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 13.
+LaTeX Font Info:    ... okay on input line 13.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 13.
+LaTeX Font Info:    ... okay on input line 13.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 13.
+LaTeX Font Info:    ... okay on input line 13.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 13.
+LaTeX Font Info:    ... okay on input line 13.
+LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 13.
+LaTeX Font Info:    ... okay on input line 13.
+
+(/usr/local/texlive/2014/texmf-dist/tex/context/base/supp-pdf.mkii
+[Loading MPS to PDF converter (version 2006.09.02).]
+\scratchcounter=\count114
+\scratchdimen=\dimen129
+\scratchbox=\box30
+\nofMPsegments=\count115
+\nofMParguments=\count116
+\everyMPshowfont=\toks24
+\MPscratchCnt=\count117
+\MPscratchDim=\dimen130
+\MPnumerator=\count118
+\makeMPintoPDFobject=\count119
+\everyMPtoPDFconversion=\toks25
+) (/usr/local/texlive/2014/texmf-dist/tex/generic/oberdiek/pdftexcmds.sty
+Package: pdftexcmds 2011/11/29 v0.20 Utility functions of pdfTeX for LuaTeX (HO
+)
+
+(/usr/local/texlive/2014/texmf-dist/tex/generic/oberdiek/ifluatex.sty
+Package: ifluatex 2010/03/01 v1.3 Provides the ifluatex switch (HO)
+Package ifluatex Info: LuaTeX not detected.
+)
+Package pdftexcmds Info: LuaTeX not detected.
+Package pdftexcmds Info: \pdf@primitive is available.
+Package pdftexcmds Info: \pdf@ifprimitive is available.
+Package pdftexcmds Info: \pdfdraftmode found.
+)
+(/usr/local/texlive/2014/texmf-dist/tex/latex/oberdiek/epstopdf-base.sty
+Package: epstopdf-base 2010/02/09 v2.5 Base part for package epstopdf
+
+(/usr/local/texlive/2014/texmf-dist/tex/latex/oberdiek/grfext.sty
+Package: grfext 2010/08/19 v1.1 Manage graphics extensions (HO)
+
+(/usr/local/texlive/2014/texmf-dist/tex/generic/oberdiek/kvdefinekeys.sty
+Package: kvdefinekeys 2011/04/07 v1.3 Define keys (HO)
+))
+(/usr/local/texlive/2014/texmf-dist/tex/latex/oberdiek/kvoptions.sty
+Package: kvoptions 2011/06/30 v3.11 Key value format for package options (HO)
+
+(/usr/local/texlive/2014/texmf-dist/tex/generic/oberdiek/kvsetkeys.sty
+Package: kvsetkeys 2012/04/25 v1.16 Key value parser (HO)
+
+(/usr/local/texlive/2014/texmf-dist/tex/generic/oberdiek/etexcmds.sty
+Package: etexcmds 2011/02/16 v1.5 Avoid name clashes with e-TeX commands (HO)
+Package etexcmds Info: Could not find \expanded.
+(etexcmds)             That can mean that you are not using pdfTeX 1.50 or
+(etexcmds)             that some package has redefined \expanded.
+(etexcmds)             In the latter case, load this package earlier.
+)))
+Package grfext Info: Graphics extension search list:
+(grfext)             [.png,.pdf,.jpg,.mps,.jpeg,.jbig2,.jb2,.PNG,.PDF,.JPG,.JPE
+G,.JBIG2,.JB2,.eps]
+(grfext)             \AppendGraphicsExtensions on input line 452.
+
+(/usr/local/texlive/2014/texmf-dist/tex/latex/latexconfig/epstopdf-sys.cfg
+File: epstopdf-sys.cfg 2010/07/13 v1.3 Configuration of (r)epstopdf for TeX Liv
+e
+))
+*geometry* driver: auto-detecting
+*geometry* detected driver: pdftex
+*geometry* verbose mode - [ preamble ] result:
+* driver: pdftex
+* paper: <default>
+* layout: <same size as paper>
+* layoutoffset:(h,v)=(0.0pt,0.0pt)
+* modes: 
+* h-part:(L,W,R)=(93.95122pt, 426.39256pt, 93.95122pt)
+* v-part:(T,H,B)=(90.3375pt, 614.295pt, 90.3375pt)
+* \paperwidth=614.295pt
+* \paperheight=794.96999pt
+* \textwidth=426.39256pt
+* \textheight=614.295pt
+* \oddsidemargin=21.68123pt
+* \evensidemargin=21.68123pt
+* \topmargin=-18.9325pt
+* \headheight=12.0pt
+* \headsep=25.0pt
+* \topskip=12.0pt
+* \footskip=30.0pt
+* \marginparwidth=44.0pt
+* \marginparsep=10.0pt
+* \columnsep=10.0pt
+* \skip\footins=10.8pt plus 4.0pt minus 2.0pt
+* \hoffset=0.0pt
+* \voffset=0.0pt
+* \mag=1000
+* \@twocolumnfalse
+* \@twosidefalse
+* \@mparswitchfalse
+* \@reversemarginfalse
+* (1in=72.27pt=25.4mm, 1cm=28.453pt)
+
+Package caption Info: Begin \AtBeginDocument code.
+Package caption Info: End \AtBeginDocument code.
+[1
+
+{/usr/local/texlive/2014/texmf-var/fonts/map/pdftex/updmap/pdftex.map}]
+[1] [2] (./Write Up Rough Draft.toc [3])
+\tf@toc=\write3
+\openout3 = `"Write Up Rough Draft.toc"'.
+
+ [4] (./Write Up Rough Draft.lof)
+\tf@lof=\write4
+\openout4 = `"Write Up Rough Draft.lof"'.
+
+
+[5] <cetMarket.png, id=27, 801.99625pt x 860.21375pt>
+File: cetMarket.png Graphic file (type png)
+ <use cetMarket.png>
+Package pdftex.def Info: cetMarket.png used on input line 62.
+(pdftex.def)             Requested size: 240.60072pt x 258.06612pt.
+
+[1 <./cetMarket.png>] [2]
+Overfull \hbox (13.3751pt too wide) in paragraph at lines 87--88
+\OT1/cmr/m/n/12 Previous work into oligopolis-tic elec-tric-ity mar-kets have u
+ti-lized the Cournot, Bertrand,
+ []
+
+[3] <EMCAS.jpg, id=43, 301.125pt x 243.15843pt>
+File: EMCAS.jpg Graphic file (type jpg)
+ <use EMCAS.jpg>
+Package pdftex.def Info: EMCAS.jpg used on input line 96.
+(pdftex.def)             Requested size: 225.84319pt x 182.36838pt.
+ [4] [5 <./EMCAS.jpg>] <meantemp.png, id=51, 828.09375pt x 428.60126pt>
+File: meantemp.png Graphic file (type png)
+ <use meantemp.png>
+Package pdftex.def Info: meantemp.png used on input line 118.
+(pdftex.def)             Requested size: 331.23163pt x 171.43745pt.
+
+<gases-co2.png, id=52, 420.57124pt x 414.54875pt>
+File: gases-co2.png Graphic file (type png)
+ <use gases-co2.png>
+Package pdftex.def Info: gases-co2.png used on input line 127.
+(pdftex.def)             Requested size: 168.22551pt x 165.81656pt.
+ [6 <./meantemp.png (PNG copy)>] [7 <./gases-co2.png (PNG copy)>] [8] [9] [10] 
+[11]
+Underfull \hbox (badness 10000) in paragraph at lines 221--222
+
+ []
+
+[12]
+Package epstopdf Info: Source file: <DF.eps>
+(epstopdf)                    date: 2014-11-18 13:42:56
+(epstopdf)                    size: 23978 bytes
+(epstopdf)             Output file: <DF-eps-converted-to.pdf>
+(epstopdf)                    date: 2014-11-18 13:42:59
+(epstopdf)                    size: 8578 bytes
+(epstopdf)             Command: <repstopdf --outfile=DF-eps-converted-to.pdf DF
+.eps>
+(epstopdf)             \includegraphics on input line 246.
+Package epstopdf Info: Output file is already uptodate.
+ <DF-eps-converted-to.pdf, id=79, 361.35pt x 243.91125pt>
+File: DF-eps-converted-to.pdf Graphic file (type pdf)
+
+<use DF-eps-converted-to.pdf>
+Package pdftex.def Info: DF-eps-converted-to.pdf used on input line 246.
+(pdftex.def)             Requested size: 216.81168pt x 146.34787pt.
+
+<feedbackloop.png, id=80, 795.97375pt x 233.87375pt>
+File: feedbackloop.png Graphic file (type png)
+ <use feedbackloop.png>
+Package pdftex.def Info: feedbackloop.png used on input line 255.
+(pdftex.def)             Requested size: 477.58794pt x 140.32532pt.
+
+Overfull \hbox (51.19537pt too wide) in paragraph at lines 255--256
+ [] 
+ []
+
+[13] [14 <./DF-eps-converted-to.pdf> <./feedbackloop.png>]
+Package epstopdf Info: Source file: <2Player.eps>
+(epstopdf)                    date: 2014-12-08 00:19:51
+(epstopdf)                    size: 303395 bytes
+(epstopdf)             Output file: <2Player-eps-converted-to.pdf>
+(epstopdf)                    date: 2014-12-08 00:27:32
+(epstopdf)                    size: 51202 bytes
+(epstopdf)             Command: <repstopdf --outfile=2Player-eps-converted-to.p
+df 2Player.eps>
+(epstopdf)             \includegraphics on input line 275.
+Package epstopdf Info: Output file is already uptodate.
+
+<2Player-eps-converted-to.pdf, id=92, 596.2275pt x 396.48125pt>
+File: 2Player-eps-converted-to.pdf Graphic file (type pdf)
+
+<use 2Player-eps-converted-to.pdf>
+Package pdftex.def Info: 2Player-eps-converted-to.pdf used on input line 275.
+(pdftex.def)             Requested size: 447.16953pt x 297.3602pt.
+
+Overfull \hbox (20.77696pt too wide) in paragraph at lines 275--276
+ [] 
+ []
+
+[15 <./2Player-eps-converted-to.pdf>]
+<investment.png, id=99, 678.535pt x 495.8525pt>
+File: investment.png Graphic file (type png)
+ <use investment.png>
+Package pdftex.def Info: investment.png used on input line 285.
+(pdftex.def)             Requested size: 271.40918pt x 198.33748pt.
+ [16 <./investment.png>] <numP.png, id=104, 932.48375pt x 670.505pt>
+File: numP.png Graphic file (type png)
+ <use numP.png>
+Package pdftex.def Info: numP.png used on input line 299.
+(pdftex.def)             Requested size: 326.3742pt x 234.68027pt.
+
+[17 <./numP.png>] [18] <CO2_percent.png, id=112, 797.98125pt x 548.0475pt>
+File: CO2_percent.png Graphic file (type png)
+
+<use CO2_percent.png>
+Package pdftex.def Info: CO2_percent.png used on input line 323.
+(pdftex.def)             Requested size: 319.18684pt x 219.2151pt.
+ [19] <spatial_flow.png, id=117, 624.3325pt x 485.815pt>
+File: spatial_flow.png Graphic file (type png)
+
+<use spatial_flow.png>
+Package pdftex.def Info: spatial_flow.png used on input line 340.
+(pdftex.def)             Requested size: 312.16548pt x 242.9069pt.
+ [20 <./CO2_percent.png>] [21 <./spatial_flow.png>]
+Underfull \hbox (badness 10000) in paragraph at lines 362--363
+
+ []
+
+[22] [23] <movement_before.png, id=132, 500.87125pt x 637.38126pt>
+File: movement_before.png Graphic file (type png)
+
+<use movement_before.png>
+Package pdftex.def Info: movement_before.png used on input line 401.
+(pdftex.def)             Requested size: 200.34494pt x 254.94798pt.
+
+<movement_after.png, id=133, 504.88625pt x 633.36626pt>
+File: movement_after.png Graphic file (type png)
+
+<use movement_after.png>
+Package pdftex.def Info: movement_after.png used on input line 408.
+(pdftex.def)             Requested size: 201.95091pt x 253.34201pt.
+ [24]
+
+LaTeX Warning: Text page 25 contains only floats.
+
+[25 <./movement_before.png> <./movement_after.png>] [26] [27] [28] [29]
+<wire.png, id=155, 813.0375pt x 929.4725pt>
+File: wire.png Graphic file (type png)
+ <use wire.png>
+Package pdftex.def Info: wire.png used on input line 454.
+(pdftex.def)             Requested size: 406.51776pt x 464.73512pt.
+ [30 <./wire.png>]
+<levelized_cost.png, id=160, 934.692pt x 409.53pt>
+File: levelized_cost.png Graphic file (type png)
+ <use levelized_cost.png>
+Package pdftex.def Info: levelized_cost.png used on input line 464.
+(pdftex.def)             Requested size: 467.34486pt x 204.7645pt.
+
+[31 <./levelized_cost.png>]
+Package epstopdf Info: Source file: <2playertotals.eps>
+(epstopdf)                    date: 2014-12-08 00:19:07
+(epstopdf)                    size: 200091 bytes
+(epstopdf)             Output file: <2playertotals-eps-converted-to.pdf>
+(epstopdf)                    date: 2014-12-08 00:27:30
+(epstopdf)                    size: 35626 bytes
+(epstopdf)             Command: <repstopdf --outfile=2playertotals-eps-converte
+d-to.pdf 2playertotals.eps>
+(epstopdf)             \includegraphics on input line 477.
+Package epstopdf Info: Output file is already uptodate.
+
+<2playertotals-eps-converted-to.pdf, id=166, 596.2275pt x 396.48125pt>
+File: 2playertotals-eps-converted-to.pdf Graphic file (type pdf)
+
+<use 2playertotals-eps-converted-to.pdf>
+Package pdftex.def Info: 2playertotals-eps-converted-to.pdf used on input line 
+477.
+(pdftex.def)             Requested size: 357.73926pt x 237.89058pt.
+Package epstopdf Info: Source file: <2player.eps>
+(epstopdf)                    date: 2014-12-08 00:19:51
+(epstopdf)                    size: 303395 bytes
+(epstopdf)             Output file: <2player-eps-converted-to.pdf>
+(epstopdf)                    date: 2014-12-08 00:27:32
+(epstopdf)                    size: 51202 bytes
+(epstopdf)             Command: <repstopdf --outfile=2player-eps-converted-to.p
+df 2player.eps>
+(epstopdf)             \includegraphics on input line 484.
+Package epstopdf Info: Output file is already uptodate.
+
+<2player-eps-converted-to.pdf, id=167, 596.2275pt x 396.48125pt>
+File: 2player-eps-converted-to.pdf Graphic file (type pdf)
+
+<use 2player-eps-converted-to.pdf>
+Package pdftex.def Info: 2player-eps-converted-to.pdf used on input line 484.
+(pdftex.def)             Requested size: 357.73926pt x 237.89058pt.
+ [32 <./2playertotals-eps-converted-to.pdf> <./2player-eps-converted-to.pdf>]
+Package epstopdf Info: Source file: <3playertotals.eps>
+(epstopdf)                    date: 2014-12-07 23:56:21
+(epstopdf)                    size: 231159 bytes
+(epstopdf)             Output file: <3playertotals-eps-converted-to.pdf>
+(epstopdf)                    date: 2014-12-08 08:02:30
+(epstopdf)                    size: 41642 bytes
+(epstopdf)             Command: <repstopdf --outfile=3playertotals-eps-converte
+d-to.pdf 3playertotals.eps>
+(epstopdf)             \includegraphics on input line 495.
+Package epstopdf Info: Output file is already uptodate.
+
+<3playertotals-eps-converted-to.pdf, id=175, 596.2275pt x 396.48125pt>
+File: 3playertotals-eps-converted-to.pdf Graphic file (type pdf)
+
+<use 3playertotals-eps-converted-to.pdf>
+Package pdftex.def Info: 3playertotals-eps-converted-to.pdf used on input line 
+495.
+(pdftex.def)             Requested size: 357.73926pt x 237.89058pt.
+Package epstopdf Info: Source file: <3player.eps>
+(epstopdf)                    date: 2014-12-07 23:52:55
+(epstopdf)                    size: 307431 bytes
+(epstopdf)             Output file: <3player-eps-converted-to.pdf>
+(epstopdf)                    date: 2014-12-08 00:27:29
+(epstopdf)                    size: 51190 bytes
+(epstopdf)             Command: <repstopdf --outfile=3player-eps-converted-to.p
+df 3player.eps>
+(epstopdf)             \includegraphics on input line 502.
+Package epstopdf Info: Output file is already uptodate.
+
+<3player-eps-converted-to.pdf, id=176, 596.2275pt x 396.48125pt>
+File: 3player-eps-converted-to.pdf Graphic file (type pdf)
+
+<use 3player-eps-converted-to.pdf>
+Package pdftex.def Info: 3player-eps-converted-to.pdf used on input line 502.
+(pdftex.def)             Requested size: 357.73926pt x 237.89058pt.
+ [33 <./3playertotals-eps-converted-to.pdf> <./3player-eps-converted-to.pdf>]
+Package epstopdf Info: Source file: <4playertotals.eps>
+(epstopdf)                    date: 2014-12-07 23:59:05
+(epstopdf)                    size: 197177 bytes
+(epstopdf)             Output file: <4playertotals-eps-converted-to.pdf>
+(epstopdf)                    date: 2014-12-08 08:02:31
+(epstopdf)                    size: 34372 bytes
+(epstopdf)             Command: <repstopdf --outfile=4playertotals-eps-converte
+d-to.pdf 4playertotals.eps>
+(epstopdf)             \includegraphics on input line 513.
+Package epstopdf Info: Output file is already uptodate.
+
+<4playertotals-eps-converted-to.pdf, id=184, 596.2275pt x 396.48125pt>
+File: 4playertotals-eps-converted-to.pdf Graphic file (type pdf)
+
+<use 4playertotals-eps-converted-to.pdf>
+Package pdftex.def Info: 4playertotals-eps-converted-to.pdf used on input line 
+513.
+(pdftex.def)             Requested size: 357.73926pt x 237.89058pt.
+Package epstopdf Info: Source file: <4player.eps>
+(epstopdf)                    date: 2014-12-08 00:00:14
+(epstopdf)                    size: 304474 bytes
+(epstopdf)             Output file: <4player-eps-converted-to.pdf>
+(epstopdf)                    date: 2014-12-08 08:02:33
+(epstopdf)                    size: 49922 bytes
+(epstopdf)             Command: <repstopdf --outfile=4player-eps-converted-to.p
+df 4player.eps>
+(epstopdf)             \includegraphics on input line 520.
+Package epstopdf Info: Output file is already uptodate.
+
+<4player-eps-converted-to.pdf, id=185, 596.2275pt x 396.48125pt>
+File: 4player-eps-converted-to.pdf Graphic file (type pdf)
+
+<use 4player-eps-converted-to.pdf>
+Package pdftex.def Info: 4player-eps-converted-to.pdf used on input line 520.
+(pdftex.def)             Requested size: 357.73926pt x 237.89058pt.
+ [34 <./4playertotals-eps-converted-to.pdf> <./4player-eps-converted-to.pdf>]
+Package epstopdf Info: Source file: <5playertotals.eps>
+(epstopdf)                    date: 2014-12-08 00:09:32
+(epstopdf)                    size: 211076 bytes
+(epstopdf)             Output file: <5playertotals-eps-converted-to.pdf>
+(epstopdf)                    date: 2014-12-08 00:47:44
+(epstopdf)                    size: 36948 bytes
+(epstopdf)             Command: <repstopdf --outfile=5playertotals-eps-converte
+d-to.pdf 5playertotals.eps>
+(epstopdf)             \includegraphics on input line 531.
+Package epstopdf Info: Output file is already uptodate.
+
+<5playertotals-eps-converted-to.pdf, id=193, 596.2275pt x 396.48125pt>
+File: 5playertotals-eps-converted-to.pdf Graphic file (type pdf)
+
+<use 5playertotals-eps-converted-to.pdf>
+Package pdftex.def Info: 5playertotals-eps-converted-to.pdf used on input line 
+531.
+(pdftex.def)             Requested size: 357.73926pt x 237.89058pt.
+Package epstopdf Info: Source file: <5player.eps>
+(epstopdf)                    date: 2014-12-08 00:09:02
+(epstopdf)                    size: 314976 bytes
+(epstopdf)             Output file: <5player-eps-converted-to.pdf>
+(epstopdf)                    date: 2014-12-08 00:47:45
+(epstopdf)                    size: 53760 bytes
+(epstopdf)             Command: <repstopdf --outfile=5player-eps-converted-to.p
+df 5player.eps>
+(epstopdf)             \includegraphics on input line 538.
+Package epstopdf Info: Output file is already uptodate.
+
+<5player-eps-converted-to.pdf, id=194, 596.2275pt x 396.48125pt>
+File: 5player-eps-converted-to.pdf Graphic file (type pdf)
+
+<use 5player-eps-converted-to.pdf>
+Package pdftex.def Info: 5player-eps-converted-to.pdf used on input line 538.
+(pdftex.def)             Requested size: 357.73926pt x 237.89058pt.
+ [35 <./5playertotals-eps-converted-to.pdf> <./5player-eps-converted-to.pdf>]
+Missing character: There is no ‚ in font cmr12!
+Missing character: There is no Ä in font cmr12!
+Missing character: There is no ù in font cmr12!
+Missing character: There is no ‚ in font cmr12!
+Missing character: There is no Ä in font cmr12!
+Missing character: There is no ù in font cmr12!
+Missing character: There is no ‚ in font cmr12!
+Missing character: There is no Ä in font cmr12!
+Missing character: There is no ù in font cmr12!
+LaTeX Font Info:    Try loading font information for OML+cmr on input line 553.
+
+
+(/usr/local/texlive/2014/texmf-dist/tex/latex/base/omlcmr.fd
+File: omlcmr.fd 1999/05/25 v2.5h Standard LaTeX font definitions
+)
+LaTeX Font Info:    Font shape `OML/cmr/m/n' in size <12> not available
+(Font)              Font shape `OML/cmm/m/it' tried instead on input line 553.
+
+Underfull \hbox (badness 3919) in paragraph at lines 552--554
+[]\OT1/cmr/m/n/12 Osborne, Mar-tin J. "Com-pet-i-tive Equi-lib-rium in an Ex-ch
+ange Econ-
+ []
+
+
+Underfull \hbox (badness 2035) in paragraph at lines 552--554
+\OT1/cmr/m/n/12 omy." Eco-nomics UToronto. U Toronto, 1997. Web. 30 Nov. 2014. 
+\OMS/cmsy/m/n/10 ^^B
+ []
+
+
+Underfull \hbox (badness 5091) in paragraph at lines 571--574
+[]\OT1/cmr/m/n/12 Argonne Na-tional Lab-o-ra-tory. "Elec-tric-ity Mar-ket Com-p
+lex Adap-tive
+ []
+
+
+Underfull \hbox (badness 2680) in paragraph at lines 571--574
+\OT1/cmr/m/n/12 Sys-tem." Ar-gonne Na-tional Lab-o-ra-tory. N.p., n.d. Web. 1 F
+eb. 2015.
+ []
+
+[36] [37] (./Write Up Rough Draft.aux) ) 
+Here is how much of TeX's memory you used:
+ 5980 strings out of 493117
+ 100845 string characters out of 6135433
+ 173145 words of memory out of 5000000
+ 9355 multiletter control sequences out of 15000+600000
+ 12162 words of font info for 44 fonts, out of 8000000 for 9000
+ 1141 hyphenation exceptions out of 8191
+ 42i,13n,40p,1129b,451s stack positions out of 5000i,500n,10000p,200000b,80000s
+</usr/local/texlive/2014/texmf-dist/fon
+ts/type1/public/amsfonts/cm/cmbx12.pfb></usr/local/texlive/2014/texmf-dist/font
+s/type1/public/amsfonts/cm/cmex10.pfb></usr/local/texlive/2014/texmf-dist/fonts
+/type1/public/amsfonts/cm/cmmi10.pfb></usr/local/texlive/2014/texmf-dist/fonts/
+type1/public/amsfonts/cm/cmmi12.pfb></usr/local/texlive/2014/texmf-dist/fonts/t
+ype1/public/amsfonts/cm/cmmi8.pfb></usr/local/texlive/2014/texmf-dist/fonts/typ
+e1/public/amsfonts/cm/cmr10.pfb></usr/local/texlive/2014/texmf-dist/fonts/type1
+/public/amsfonts/cm/cmr12.pfb></usr/local/texlive/2014/texmf-dist/fonts/type1/p
+ublic/amsfonts/cm/cmr17.pfb></usr/local/texlive/2014/texmf-dist/fonts/type1/pub
+lic/amsfonts/cm/cmr7.pfb></usr/local/texlive/2014/texmf-dist/fonts/type1/public
+/amsfonts/cm/cmr8.pfb></usr/local/texlive/2014/texmf-dist/fonts/type1/public/am
+sfonts/cm/cmsy10.pfb></usr/local/texlive/2014/texmf-dist/fonts/type1/public/ams
+fonts/cm/cmsy7.pfb></usr/local/texlive/2014/texmf-dist/fonts/type1/public/amsfo
+nts/cm/cmsy8.pfb></usr/local/texlive/2014/texmf-dist/fonts/type1/public/amsfont
+s/cm/cmti10.pfb></usr/local/texlive/2014/texmf-dist/fonts/type1/public/amsfonts
+/cm/cmti12.pfb></usr/local/texlive/2014/texmf-dist/fonts/type1/public/amsfonts/
+cm/cmtt12.pfb>
+Output written on "Write Up Rough Draft.pdf" (43 pages, 1610329 bytes).
+PDF statistics:
+ 263 PDF objects out of 1000 (max. 8388607)
+ 167 compressed objects within 2 object streams
+ 0 named destinations out of 1000 (max. 500000)
+ 116 words of extra memory for PDF output out of 10000 (max. 10000000)
+
