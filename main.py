@@ -13,6 +13,8 @@ reload(optimizeDone)
 
 time0 = time.time()
 
+
+#  define the parameters 
 numPlayers = 4
 numTurns = 16
 numGenTypes = 3
@@ -21,34 +23,70 @@ population = 20
 numIters = 250
 maxCO2 = 10
 CO2tax = .5
+demandResolution = .1 
 
+# preallocate the matrix 
 Q = zeros((1, numTurns)) 
 total_utility = zeros((1, numTurns))
 total_revenue = zeros((1, numTurns))
 total_CO2 = zeros((1, numTurns))
 eq_price = zeros((1, numTurns))
 
-# agent = __(self, name, nuclear, gas, wind, utility, costs, damping, bank, permits=0.0):
-# utility is given in the the form: array([revenue, utilization, emissions]) with sum(utility) = 1 
-# costs are given in the form: array([nuclear, gas, wind])
-opp = agent.Agent('opp',         6, 5, 10,  array([.4, .2, .4]), array([5.0, 2.5, 8.1]), 0, numTurns)
-michael = agent.Agent('Michael', 9, 5, 8, array([.4, .2, .4]), array([4.0, 2.5, 6.1]), 0, numTurns)
-opp1 = agent.Agent('opp1',       6, 4, 12,  array([.5, .2, .3]), array([3.5, 2.0, 6.1]), 0, numTurns)
-# brit = agent.Agent('brit',       10, 7, 2,  array([.35, .25, .4]), array([2.0, 2.5, 3.1]), 0, numTurns)
-# opp2 = agent.Agent('opp2',       5, 7, 12,  array([.3, .25, .45]), array([2.0, 3, 3.6]), 0, numTurns)
+# ----------------------------------------#
+# ---------- DEFINE THE AGENTS ---------- # 
+# ----------------------------------------#
+opp1 =agent.Agent('opp1', numGenTypes, numTurns)
+michael = agent.Agent('michael', numGenTypes, numTurns)
+opp = agent.Agent('opp', numGenTypes, numTurns)
 
-agents = [michael, opp, opp1]
+agents = [opp, opp1, michael]
 
-opp.supply, opp.utilization = agent.optimizationMatrix(opp)
-michael.supply, michael.utilization = agent.optimizationMatrix(michael)
-opp1.supply, opp1.utilization = agent.optimizationMatrix(opp1)
-# brit.supply, brit.utilization = agent.optimizationMatrix(brit)
-# opp2.supply, opp2.utilization = agent.optimizationMatrix(opp2)
+# define agent 1
+          # nuc, gas, wind
+allocation = (6, 5, 10) 
+costs =      (5.3, 2.8, 6.0) 
+carbon =     (.1, 2.0, 0.0)
 
-## FIND PRICES BY SOLVING THE DEMAND CURVE AT .1 INTERVALS
-demand = equilibrium.demandfun(population, deps)
+opp.assets = asarray(allocation)
+opp.costs = asarray(costs)
+opp.carbon = asarray(carbon)
+
+# define agent 2 
+          # nuc, gas, wind
+allocation = (10, 6, 6) 
+costs =      (4.6, 2.6, 7.0) 
+carbon =     (.1, 2.0, 0.0)
+
+opp.assets = asarray(allocation)
+opp.costs = asarray(costs)
+opp.carbon = asarray(carbon)
+
+# define agent 3 
+          # nuc, gas, wind
+allocation = (10, 6, 6) 
+costs =      (4.6, 2.6, 7.0) 
+carbon =     (.1, 2.0, 0.0)
+
+opp.assets = asarray(allocation)
+opp.costs = asarray(costs)
+opp.carbon = asarray(carbon)
+
+# create the optimization matrix for each player 
+# 	- this will consist of a matrix buffered by zeros 
+# 	corresponding with the max resource
+for a in agents: 
+	a.supply, a.utilization = agent.optimizationMatrix(a)
+
+#---------------------------------#	
+# --- CREATE THE DEMAND CURVE --- #
+#---------------------------------#
+# define demand variables 
+D = sym.symbols('D')
 q = sym.symbols('Q')
-price_supply = arange(0,sum(opp.supply[-1]*20), .1)
+
+demand = population - deps * q
+
+price_supply = arange(0, agents[0].maxAssets() / demandResolution, demandResolution)
 price_supply = [demand.evalf(subs={q:ps}) for ps in price_supply]
 
 ## initialize production
@@ -63,13 +101,13 @@ for k in xrange(0, numTurns):
 		if k != 0:
 			A.oppProduction[k, 0] = A.oppProduction[k-1, 0] * A.damping[k-1, 0]
 			A.CO2_oppExpected[k, 0] = A.CO2_oppExpected[k-1, 0] * A.zeta[k-1, 0]
-			A.production[k, :], A.utilizationRate[k, 0] = optimizeDone.optimize(A, A.supply, A.oppProduction[k], A.utilization, price_supply, A.CO2_oppExpected[k], CO2tax, maxCO2, numPlayers, numIters)
+			A.production[k, :], A.utilizationRate[k, 0] = optimizeDone.optimize(A, price_supply, CO2tax, maxCO2, numPlayers, numIters)
 			A.production_expected[k, 0] = sum(A.production[k, :]) + A.oppProduction[k]
 			A.CO2[k, 0] = dot(A.production[k, :], A.carbon)
 		
 		else:
 			print 'first turn, assuming no damping'
-			A.production[k, :], A.utility[k, 0] = optimizeDone.optimize(A, A.supply, 0.0, A.utilization,  price_supply, 0.0, CO2tax, maxCO2, numPlayers, numIters)
+			A.production[k, :], A.utility[k, 0] = optimizeDone.optimize(A, price_supply, CO2tax, maxCO2, numPlayers, numIters)
 			A.production_expected[k, 0] = sum(A.production[k, :]) * 2 
 			A.CO2[k, 0] = dot(A.production[k, :], A.carbon)
 			# pdb.set_trace()

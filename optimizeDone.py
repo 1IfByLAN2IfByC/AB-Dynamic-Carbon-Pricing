@@ -14,10 +14,11 @@ import time
 import pdb 
 import equilibrium
 import sympy as sym
-def optimize(Agent, matrixIN, oppExpectedSupply, utilizationMatrix, priceArray, CO2_expected, margTax, maxCO2, numPlayers, maxIter):
+def optimize(Agent, priceArray, margTax, maxCO2, numPlayers, maxIter):
 	t = time.time()
-	[m, n] = shape(matrixIN)
-	numGenTypes = int(n/numPlayers)
+	[m, n] = shape(Agent.supply)
+
+	[m, n] = shape(Agent.supply)
 
 	maxUtilityCombo = zeros((maxIter,n))
 	maxUtilityScalar = zeros((maxIter, 1))
@@ -26,69 +27,21 @@ def optimize(Agent, matrixIN, oppExpectedSupply, utilizationMatrix, priceArray, 
 
 	# set monopolist or no
 	mono = True
+	matrix = Agent.supply
 
-	# elastiticy variables
-	deps = .1
-	seps = .2
+	for i in xrange(0, 1):
+		[m, n] = shape(matrix) # number of rows changes with each iteratio
 
-	# make deep copy of the input array for mutation
-	matrix = matrixIN.copy()
+		random.shuffle(Agent.supply.T)
+		supply = dot(Agent.supply, ones((n,1))) 
 
-	# create cost vector
-	# each player assumes all other players face the same costs
-	# costFun = tile(Agent.costs, numPlayers)
-
-	costFun = Agent.costs
-
-	# solve for demand given population
-	# demand = equilibrium.demandfun(population, deps)
-	# eqD = equilibrium.equilibrium(demand, seps)
-	# Q = sym.symbols('Q')
-
-	# find the percent of total capacity each firm has
-	# capShare = [i / sum(totalAss) for i in totalAss]
-	# capShare = array(capShare)
-
-	## calculate the cost for a range of supplies
-	# price_supply = arange(0,sum(supply[-1]), .1)
-	# price_supply = [demand.evalf(subs={Q:ps}) for ps in price_supply]
-	price_supply = priceArray
- 	
-	for i in xrange(0, maxIter):
-		# as a check system, print the horizontal sum of the row
-		# should change every time or so
-		# print dot(matrix, ones((n,1)))
-		# print '/n'
-		[m, n] = shape(matrix) # number of rows changes with each iteration
-
-		# shift the key down
-		def shuffle(matrix, m, n, turn):
-			key = (turn+m)%m
-			# print key
-			for j in xrange(0, n):
-				shift = (key+j)%m
-				tmp = matrix[shift, j]
-
-				if shift + 1 < m-1: # -1 because shape gives abs. not placement
-					matrix[shift, j] = matrix[ (shift+1), j]
-					matrix[(shift+1), j] = tmp
-
-				else:
-					matrix[shift, j] = matrix[0, j]
-					matrix[0, j] = tmp
-
-			return matrix
-
-		
-		matrix = shuffle(matrix, m, n, i)
-		supply = dot(matrix, ones((n,1))) 
 		## ADJUST THE MATRIX BASED ON DAMPING FUNCTION
-		if oppExpectedSupply == 0:
-			aggSupply = numPlayers*dot(matrix, ones((n,1))) 
-			CO2 = (dot(matrix, Agent.carbon) * numPlayers)
+		if i == 0:
+			aggSupply = numPlayers* dot(Agent.supply, ones((n,1))) 
+			CO2 = numPlayers* dot(Agent.supply, Agent.carbon) 
 		else:
-			aggSupply = dot(matrix, ones((n,1))) + oppExpectedSupply*ones((m,1))
-			CO2 = dot(matrix, Agent.carbon).reshape(m, 1) + CO2_expected*ones((m, 1))
+			aggSupply = dot(Agent.supply, ones((n,1))) + Agent.production_expected*ones((m,1))
+			CO2 = dot(Agent.supply, Agent.carbon).reshape(m, 1) + Agent.CO2_oppExpected*ones((m, 1))
 
 		if mono == True:
 			supply = aggSupply
@@ -98,27 +51,27 @@ def optimize(Agent, matrixIN, oppExpectedSupply, utilizationMatrix, priceArray, 
 		# round to 2 decimal places and multiply by 10 to get price index
 		Qsupplied = array([round(s, 2) * 10 for s in aggSupply]).reshape(m,1)
 
-		energyPrice = [price_supply[int(q)] for q in Qsupplied]
+		energyPrice = [priceArray[int(q)] for q in Qsupplied]
 		energyPrice = array(energyPrice).reshape(m, 1)
 
 		# FIND UTILIZATION, REVENUE
-		
-		
-		revenueDecoupled = ( supply* energyPrice ) - (dot(matrix, costFun.reshape(n,1))) 
-		utilizationRate = dot(1 - ((utilizationMatrix - matrix) / utilizationMatrix), ones((n,1)))
-		
+
+		revenueDecoupled = ( supply* energyPrice ) - (dot(matrix, Agent.costs.reshape(n,1))) 
+		utilizationRate = dot(1 - ((Agent.utilization - Agent.supply) / Agent.utilization), ones((n,1)))
+
 		# check to see if the total supply is greater than equal to demand
 		# drop if the total utility is negative
 		deleteRow = []
 		taxedCombos = zeros((1, m))
+
 		for k in xrange(0,m):
-			# if revenue is neg., drop combo
-			# if CO2 level is greater than max lvl impose tax
-			if revenueDecoupled[k] <= 0:
-				deleteRow.append(k)
-			elif CO2[k] >= maxCO2:
-				taxedCombos[0, k] = 1
-		
+		# if revenue is neg., drop combo
+		# if CO2 level is greater than max lvl impose tax
+		    if revenueDecoupled[k] <= 0:
+		        deleteRow.append(k)
+		    if CO2[k] >= maxCO2:
+		        taxedCombos[0, k] = 1
+
 		# IF CO2 LEVELS ARE GREATER, ADD THE MARGINAL TAX TO COSTS
 
 		taxLosses = taxedCombos * CO2.reshape(1,m)*margTax
@@ -131,6 +84,8 @@ def optimize(Agent, matrixIN, oppExpectedSupply, utilizationMatrix, priceArray, 
 		energyPrice = delete(energyPrice, deleteRow, 0)
 		taxLosses = delete(taxLosses, deleteRow, 1)
 		CO2 = delete(CO2, deleteRow)
+
+
 		
 
 		revenueDecoupled = revenueDecoupled - taxLosses.transpose()

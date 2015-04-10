@@ -26,18 +26,24 @@ class Agent(object):
 	""" name, quantity supplied, nuclear, gas, wind, turn)"""
 	
 
-	def __init__(self, name, nuclear, gas, wind, utilityCoeff, costs, bank, numTurns, permits=0.0):
+	def __init__(self, name, Nvariables, numTurns):
 		self.name = name
-		self.nuclear = nuclear
-		self.gas = gas
-		self.wind = wind
-		self.permits = permits 
-		self.assets = array([[nuclear, gas, wind]])
-		self.utilityCoeff = utilityCoeff
+		self.numGenTypes = Nvariables
+
+		# default values for floats
+		self.permits = 0 
+		self.bank = 0
+
+		# variables defined by the agent parameters
+		self.assets = zeros((Nvariables,1))
+		self.utilityCoeff = zeros((Nvariables,1))
+		self.carbon = zeros((Nvariables,1))
+		self.costs = zeros((Nvariables,1))
+
+
+		# variables that are stored each turn 
 		self.delta = zeros((numTurns, 1))
 		self.production = zeros((numTurns, 3))
-		self.costs = array(costs)
-		self.bank = bank
 		self.utility = zeros((numTurns, 1))
 		self.production_expected = zeros((numTurns, 1))
 		self.supply = zeros((numTurns, 1))
@@ -47,10 +53,10 @@ class Agent(object):
 		self.damping = zeros((numTurns, 1))
 		self.CO2_oppExpected = zeros((numTurns, 1))
 		self.CO2 = zeros((numTurns, 1))
-		self.carbon = array([0, 1, 0])
 		self.zeta = zeros((numTurns, 1))
 		self.revenue = zeros((numTurns, 1))
 
+		# turn counter
 		self.turn = 0
 
 
@@ -99,7 +105,7 @@ class Agent(object):
 		return self.nuclear + self.wind + self.gas
 
 	def maxAssets(self):
-		return max(self.nuclear, self.wind, self.gas)
+		return max(self.assets)
 
 	def productionUpdate(self, production):
 		self.production = append(self.production, production)
@@ -124,6 +130,14 @@ class Agent(object):
 
 		self.zeta[self.turn, 0] = zeta 
 
+
+	def productionStack(self):
+
+		pStack = zeros(( self.maxAssets()+1, len(self.assets)))
+		for col in range(len(self.assets)):
+			pStack[(self.maxAssets()+1 - self.assets[col]):, col] = arange(1, self.assets[col]+1) 
+
+		return pStack
 
 	def fitProperty(self, arg):
 
@@ -172,43 +186,30 @@ def agent(turn, population, supplyEps, demandEps):
 
 
 def optimizationMatrix(*Agent):
-	types = ['nuclear', 'gas', 'wind']
-	numRow = 0
-	numAgent = 0
 	i = 0
 
-	utilization = array([])
+	numAgent = len(Agent)
+
 	cost = array([])
-
-	# find the maximum number of assets
-	for agent in Agent:
-		numAgent = numAgent + 1
-		
-		if numRow < agent.maxAssets():
-			numRow = agent.maxAssets()
-		else:
-			pass
-
-	supplyMatrix = zeros((numRow + 1, numAgent * len(types) ))
 	
-	# add padding so everyone has the same number of assets
+	# find the maximum number of assets
+	maxAssets = 0
 	for agent in Agent:
-		utilization = hstack((utilization, [getattr(agent, 'nuclear'), getattr(agent, 'gas'), getattr(agent, 'wind')]))
-		# cost = hstack((cost, [costNuc, costGas, costWind]))
-		for t in types:
-			num = getattr(agent, t)
-			if num == numRow:
-				supplyMatrix[:, i] = range(0, num + 1) #+1 range stops at x-1
-			elif num < numRow:
-				supplyMatrix[0:(numRow - num), i] = 0
-				supplyMatrix[(numRow - num):, i] = range(0, num +1)
-			else:
-				print('ERROR: the number of rows counter broke')
+		numGenTypes = agent.numGenTypes
+		if agent.maxAssets() > maxAssets:
+			maxAssets = agent.maxAssets()
 
-			i  = i + 1 
+	utilization = zeros((1, numGenTypes*numAgent))
+	supplyMatrix = zeros((maxAssets + 1, numAgent * numGenTypes ))
+	
+	# add padding so everyone has the matrix is even
+	itr = 0
+	for agent in Agent:
+		for col in range(numGenTypes):
+			utilization[0,col] = agent.assets[col]
+			supplyMatrix[(maxAssets +1 - agent.assets[col]):, itr] = arange(1, agent.assets[col]+1)
+			itr = itr +1 
 
-	# turn utility vector into a matrix
-	utilization = ones((numRow + 1, numAgent*len(types))) * utilization
-
+	utilization = tile(utilization, (maxAssets+1,1))
 	return supplyMatrix, utilization
 
