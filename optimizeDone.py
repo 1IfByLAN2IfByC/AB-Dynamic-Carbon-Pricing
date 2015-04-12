@@ -40,7 +40,7 @@ def optimize(Agent, priceArray, margTax, maxCO2, numPlayers, maxIter, turn):
 
 		else:
 			aggSupply = dot(Agent.supply, ones((n,1))) +\
-				Agent.production_expected[turn]*ones((m,1))
+				Agent.oppProduction[turn]*ones((m,1))
 
 			CO2 = dot(Agent.supply, Agent.carbon).reshape(m, 1) + \
 				Agent.CO2_oppExpected[turn]*ones((m, 1))

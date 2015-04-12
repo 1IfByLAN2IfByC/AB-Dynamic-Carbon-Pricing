@@ -22,7 +22,7 @@ deps = .2
 population = 15
 numIters = 100
 maxCO2 = 10
-CO2tax = .5
+CO2tax = 0
 demandResolution = .1 
 
 # preallocate the matrix 
@@ -69,8 +69,8 @@ opp.utilityCoeff = asarray(coeff)
 
 # define agent 3 
           # nuc, gas, wind
-allocation = (10, 6, 6) 
-costs =      (4.6, 2.6, 7.0) 
+allocation = (4, 10, 6) 
+costs =      (4.8, 2.4, 7.0) 
 carbon =     (.1, 2.0, 0.0)
 coeff = (.7, .2, .1)
 
@@ -98,7 +98,7 @@ price_supply = arange(0, agents[0].maxAssets() / demandResolution, demandResolut
 price_supply = [demand.evalf(subs={q:ps}) for ps in price_supply]
 
 ## initialize production
-i =0
+i = 0
 
 for k in xrange(0, numTurns):
 	print 'Begin turn %s' % k
@@ -142,12 +142,12 @@ for k in xrange(0, numTurns):
 
 		# check to see if surpasses the predefined max CO2
 		if total_CO2[0, k] >= maxCO2:
+			A.revenue[k,0] = sum(A.production[k]*eq_price[0,k] - A.production[k]*A.costs) - A.CO2[k,0] * CO2tax
 			A.utility[k,0] = A.utilityCalc(A.revenue[k, 0], A.utilizationRate[k, 0], A.CO2[k, 0], eq_price[0, k])
-			A.revenue[k,0] = sum(A.production[k,0]*eq_price[0,k] - A.production[k,0]*A.costs) - A.CO2[k,0] * CO2tax
 
 		else:
+			A.revenue[k,0] = sum(A.production[k]*eq_price[0,k] - A.production[k]*A.costs)
 			A.utility[k,0] = A.utilityCalc(A.revenue[k, 0], A.utilizationRate[k, 0], 0, eq_price[0, k])
-			A.revenue[k,0] = sum(A.production[k,0]*eq_price[0,k] - A.production[k,0]*A.costs)
 
 		total_utility[0, k] = A.utility[k] + total_utility[0, k]
 		total_revenue[0, k] = total_revenue[0, k] + A.revenue[k, 0]

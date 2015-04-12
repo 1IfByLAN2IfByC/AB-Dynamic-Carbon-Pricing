@@ -60,16 +60,6 @@ class Agent(object):
 		self.turn = 0
 
 
-	def prodCost(self, nuclear, gas, wind):
-		# assign per MW costs 
-		nuclearC = 2.0
-		gasC = 4.0
-		windC = 0.0
-
-		prodcost = nuclear*nuclearC + gas*gasC + wind*windC
-
-		return prodcost
-
 	def assetValue(self, turn, nuclear, gas, wind):
 		# define depreciation rate of each asset
 		nuclearDep = .03
@@ -95,11 +85,11 @@ class Agent(object):
 		try:
 			# for when used to evaluate list of array choices
 			# optimalDone.py
-			return (self.utilityCoeff[1]*utilization - self.utilityCoeff[2]*CO2.reshape(len(CO2), 1))* energyPrice +(self.utilityCoeff[0]*revenue)
+			return (self.utilityCoeff[1]*utilization - self.utilityCoeff[2]*CO2.reshape(len(CO2), 1)) +(self.utilityCoeff[0]*revenue)
 		except (TypeError, AttributeError) :
 			# for when utility calc is used to evaluate actual results
 			# main.py
-			return self.utilityCoeff[1]*utilization - self.utilityCoeff[2]*CO2* energyPrice + self.utilityCoeff[0]*revenue
+			return self.utilityCoeff[1]*utilization - self.utilityCoeff[2]*CO2+ self.utilityCoeff[0]*revenue
 	
 	def totalAssets(self):
 		return self.nuclear + self.wind + self.gas
@@ -130,30 +120,6 @@ class Agent(object):
 		zeta = 1.0 / (1 + pow(1.1, delta )) + .5
 
 		self.zeta[self.turn, 0] = zeta 
-
-
-	def productionStack(self):
-
-		pStack = zeros(( self.maxAssets()+1, len(self.assets)))
-		for col in range(len(self.assets)):
-			pStack[(self.maxAssets()+1 - self.assets[col]):, col] = arange(1, self.assets[col]+1) 
-
-		return pStack
-
-	def fitProperty(self, arg):
-
-		T = arange(0, len(arg))
-		par = polyfit(T, arg, 1)
-
-		slope = par[0][0]
-		intercept = par[0][1]
-
-		y = [slope*t + intercept for t in T]
-
-		plt.plot(T, y)
-		plt.show()
-
-	# def expcectation(self, oppProduction, numGenTypes):
 
 
 def agent(turn, population, supplyEps, demandEps):
