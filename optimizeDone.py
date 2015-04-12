@@ -14,10 +14,8 @@ import time
 import pdb 
 import equilibrium
 import sympy as sym
-def optimize(Agent, priceArray, margTax, maxCO2, numPlayers, maxIter):
+def optimize(Agent, priceArray, margTax, maxCO2, numPlayers, maxIter, turn):
 	t = time.time()
-	[m, n] = shape(Agent.supply)
-
 	[m, n] = shape(Agent.supply)
 
 	maxUtilityCombo = zeros((maxIter,n))
@@ -26,37 +24,39 @@ def optimize(Agent, priceArray, margTax, maxCO2, numPlayers, maxIter):
 	maxRevenue = zeros((maxIter, 1))
 
 	# set monopolist or no
-	mono = True
+	mono = False
 	matrix = Agent.supply
 
-	for i in xrange(0, 1):
-		[m, n] = shape(matrix) # number of rows changes with each iteratio
+	for i in xrange(0, maxIter):
+		[m, n] = shape(Agent.supply) # number of rows changes with each iteratio
 
-		random.shuffle(Agent.supply.T)
+		map(random.shuffle, Agent.supply.T)
 		supply = dot(Agent.supply, ones((n,1))) 
 
 		## ADJUST THE MATRIX BASED ON DAMPING FUNCTION
-		if i == 0:
+		if Agent.production_expected[turn] == 0:
 			aggSupply = numPlayers* dot(Agent.supply, ones((n,1))) 
 			CO2 = numPlayers* dot(Agent.supply, Agent.carbon) 
+
 		else:
-			aggSupply = dot(Agent.supply, ones((n,1))) + Agent.production_expected*ones((m,1))
-			CO2 = dot(Agent.supply, Agent.carbon).reshape(m, 1) + Agent.CO2_oppExpected*ones((m, 1))
+			aggSupply = dot(Agent.supply, ones((n,1))) +\
+				Agent.production_expected[turn]*ones((m,1))
+
+			CO2 = dot(Agent.supply, Agent.carbon).reshape(m, 1) + \
+				Agent.CO2_oppExpected[turn]*ones((m, 1))
 
 		if mono == True:
 			supply = aggSupply
-		else:
-			pass
 
 		# round to 2 decimal places and multiply by 10 to get price index
 		Qsupplied = array([round(s, 2) * 10 for s in aggSupply]).reshape(m,1)
-
+		# pdb.set_trace()
 		energyPrice = [priceArray[int(q)] for q in Qsupplied]
 		energyPrice = array(energyPrice).reshape(m, 1)
 
 		# FIND UTILIZATION, REVENUE
-
-		revenueDecoupled = ( supply* energyPrice ) - (dot(matrix, Agent.costs.reshape(n,1))) 
+		# here is the pretax revenue, i.e. price*quantity - quantity*costs
+		revenueDecoupled = ( supply* energyPrice ) - (dot(Agent.supply, Agent.costs.reshape(n,1))) 
 		utilizationRate = dot(1 - ((Agent.utilization - Agent.supply) / Agent.utilization), ones((n,1)))
 
 		# check to see if the total supply is greater than equal to demand
@@ -64,10 +64,11 @@ def optimize(Agent, priceArray, margTax, maxCO2, numPlayers, maxIter):
 		deleteRow = []
 		taxedCombos = zeros((1, m))
 
+		# pdb.set_trace()
 		for k in xrange(0,m):
 		# if revenue is neg., drop combo
 		# if CO2 level is greater than max lvl impose tax
-		    if revenueDecoupled[k] <= 0:
+		    if revenueDecoupled[k,0] <= 0:
 		        deleteRow.append(k)
 		    if CO2[k] >= maxCO2:
 		        taxedCombos[0, k] = 1
@@ -79,14 +80,11 @@ def optimize(Agent, priceArray, margTax, maxCO2, numPlayers, maxIter):
 		# drop all the combinations that coincide with negative revenue
 		# revenue = delete(revenue, deleteRow, 0)
 		utilizationRate = delete(utilizationRate, deleteRow, 0)
-		matrixCal = delete(matrix, deleteRow, 0)
+		matrixCal = delete(Agent.supply, deleteRow, 0)
 		revenueDecoupled = delete(revenueDecoupled, deleteRow, 0)
 		energyPrice = delete(energyPrice, deleteRow, 0)
 		taxLosses = delete(taxLosses, deleteRow, 1)
 		CO2 = delete(CO2, deleteRow)
-
-
-		
 
 		revenueDecoupled = revenueDecoupled - taxLosses.transpose()
 
@@ -100,6 +98,7 @@ def optimize(Agent, priceArray, margTax, maxCO2, numPlayers, maxIter):
 
 		# check to make sure utility vector has values
 		# i.e. that not all the combinations yielded negative rev.
+		# pdb.set_trace()
 		try:
 			utility = Agent.utilityCalc(revenueDecoupled, utilizationRate, CO2, energyPrice)
 			maxCombo = utility.argmax()
@@ -114,18 +113,15 @@ def optimize(Agent, priceArray, margTax, maxCO2, numPlayers, maxIter):
 		else:
 			pass
 
-		
-	
 
-	# after the maximum amount of shifts has occured, find the lowest cost combo
+	# after the maximum amount of shifts has occured, find the highest utility combo
 	maximumU = maxUtilityScalar.argmax()
-	# print maximumU
 
 	maxU = maxUtilityScalar[maximumU, 0]
 	optimalCombo = maxUtilityCombo[maximumU, :]
 	optimalUtilization = maxUtilization[maximumU, 0]
 
-	
+	# pdb.set_trace()
 	# print(time.time() - t)
 	# print 'optimal combo is: ' + str(optimalCombo)
 	# print 'the max utility is: ' + str(maxU)

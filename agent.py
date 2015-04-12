@@ -126,7 +126,8 @@ class Agent(object):
 
 
 	def CO2damping(self, CO2actual):
-		zeta = 1.0 / (1 + pow(1.1, ( (self.CO2_oppExpected - CO2actual) )[self.turn, 0])) + .5
+		delta = (self.CO2_oppExpected[self.turn, 0] +self.CO2[self.turn, 0]) - CO2actual
+		zeta = 1.0 / (1 + pow(1.1, delta )) + .5
 
 		self.zeta[self.turn, 0] = zeta 
 
