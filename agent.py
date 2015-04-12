@@ -40,6 +40,10 @@ class Agent(object):
 		self.carbon = zeros((Nvariables,1))
 		self.costs = zeros((Nvariables,1))
 
+		# location variables
+		self.location = (0,0)
+		self.searchRadius = 3 # default value
+
 
 		# variables that are stored each turn 
 		self.delta = zeros((numTurns, 1))
@@ -120,6 +124,73 @@ class Agent(object):
 		zeta = 1.0 / (1 + pow(1.1, delta )) + .5
 
 		self.zeta[self.turn, 0] = zeta 
+
+
+	def visableGrid(self, grid, testLocation): 
+		''' 
+		handles the geospatial aspects of code
+		returns: 
+			population = int
+			competition = int
+		'''
+
+
+		[m,n,o] = shape(grid)
+
+		# --------------------------------- #
+		# - FIND THE WORKING GRID SECTION - #
+		# --------------------------------- #
+
+		east = testLocation[0] - self.searchRadius -1 
+		west = testLocation[0] + self.searchRadius
+		north = testLocation[1] + self.searchRadius
+		south = testLocation[1] - self.searchRadius -1
+
+		## ADD FEATURE
+		# check to see if the location is outside the grid 
+		if north > m:
+			north = m 
+		if south < 0:
+			south = 0 
+		if east < 0:
+			east = 0
+		if west > n:
+			west = n
+
+ 		visableGrid = grid[east:west, south:north]
+
+ 		# find properties of the working grid
+ 		population = sum(visableGrid[:,:, 1])
+ 		competition = sum(visableGrid[:,:, 3])
+
+
+ 		return population, competition
+
+ 	def move(self, bestSquare):
+ 		''' 
+ 		determines how agents will move
+ 		currently, they will always move up/down
+ 		before moving left/right
+ 		'''
+
+ 		direction = asarray(self.radius,self.radius) - bestSquare
+
+ 		if direction[1] > 0:
+ 			# move up
+ 			self.location[1] = self.location[1] +1 
+ 		elif direction[1] < 0: 
+ 			self.location[1] = self.location[1] - 1 
+
+ 		else:
+ 			# needs to move east/west
+ 			if direction[0] > 0:
+ 				# move west
+ 				self.location[0] = self.location[0] +1 
+ 			elif direction[0] < 0:
+ 				self.location[0] = self.location[0] -1 
+ 			else:
+ 				# already at optimal
+ 				pass
 
 
 def agent(turn, population, supplyEps, demandEps):

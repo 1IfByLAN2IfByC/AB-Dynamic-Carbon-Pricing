@@ -14,7 +14,7 @@ import time
 import pdb 
 import equilibrium
 import sympy as sym
-def optimize(Agent, priceArray, margTax, maxCO2, numPlayers, maxIter, turn):
+def optimize(Agent, priceArray, taxes, margTax, maxCO2, numPlayers, maxIter, turn):
 	t = time.time()
 	[m, n] = shape(Agent.supply)
 
@@ -132,4 +132,3 @@ def optimize(Agent, priceArray, margTax, maxCO2, numPlayers, maxIter, turn):
 	# print matrix
 
 	return optimalCombo, optimalUtilization
-	# return maxUtilityCombo, maxUtilityScalar, eqD , maxUtilization, maxRevenue
