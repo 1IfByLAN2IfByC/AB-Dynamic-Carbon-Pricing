@@ -33,11 +33,15 @@ def optimize(Agent, priceArray, taxes, margTax, maxCO2, numPlayers, maxIter, tur
 		map(random.shuffle, Agent.supply.T)
 		supply = dot(Agent.supply, ones((n,1))) 
 
+
 		## ADJUST THE MATRIX BASED ON DAMPING FUNCTION
 		if Agent.production_expected[turn] == 0:
-			aggSupply = numPlayers* dot(Agent.supply, ones((n,1))) 
-			CO2 = numPlayers* dot(Agent.supply, Agent.carbon) 
-
+			aggSupply = (numPlayers) * dot(Agent.supply, ones((n,1))) 
+			# pdb.set_trace()
+			try:
+				CO2 = (numPlayers)* dot(Agent.supply, Agent.carbon) 
+			except ValueError:
+				pdb.set_trace()
 		else:
 			aggSupply = dot(Agent.supply, ones((n,1))) +\
 				Agent.oppProduction[turn]*ones((m,1))
@@ -49,14 +53,13 @@ def optimize(Agent, priceArray, taxes, margTax, maxCO2, numPlayers, maxIter, tur
 			supply = aggSupply
 
 		# round to 2 decimal places and multiply by 10 to get price index
-		Qsupplied = array([round(s, 2) * 10 for s in aggSupply]).reshape(m,1)
 		# pdb.set_trace()
-		energyPrice = [priceArray[int(q)] for q in Qsupplied]
+		energyPrice = [priceArray[0]  - priceArray[1]*q for q in aggSupply]
 		energyPrice = array(energyPrice).reshape(m, 1)
 
 		# FIND UTILIZATION, REVENUE
 		# here is the pretax revenue, i.e. price*quantity - quantity*costs
-		revenueDecoupled = ( supply* energyPrice ) - (dot(Agent.supply, Agent.costs.reshape(n,1))) 
+		revenueDecoupled = ( supply* energyPrice ) - (dot(Agent.supply, Agent.costs.reshape(n,1))) - dot(Agent.supply,taxes.reshape(Agent.supply.shape[1],1))
 		utilizationRate = dot(1 - ((Agent.utilization - Agent.supply) / Agent.utilization), ones((n,1)))
 
 		# check to see if the total supply is greater than equal to demand
@@ -75,7 +78,7 @@ def optimize(Agent, priceArray, taxes, margTax, maxCO2, numPlayers, maxIter, tur
 
 		# IF CO2 LEVELS ARE GREATER, ADD THE MARGINAL TAX TO COSTS
 
-		taxLosses = taxedCombos * CO2.reshape(1,m)*margTax
+		taxLosses = taxedCombos * CO2.reshape(1,m)*margTax + dot(Agent.supply, taxes).T
 
 		# drop all the combinations that coincide with negative revenue
 		# revenue = delete(revenue, deleteRow, 0)
@@ -110,6 +113,7 @@ def optimize(Agent, priceArray, taxes, margTax, maxCO2, numPlayers, maxIter, tur
                 
 		except ValueError:
 			print ' error in utility calcs'
+			pdb.set_trace()
 		else:
 			pass
 

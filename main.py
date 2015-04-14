@@ -21,7 +21,7 @@ numGenTypes = 3
 numMovingTurns = 10
 deps = .2
 # population = 15 # disable if using geo 
-numShuffles = 100
+numShuffles = 50
 maxCO2 = 10
 CO2tax = 0
 demandResolution = .1 
@@ -36,9 +36,9 @@ eq_price = zeros((1, numBidsPerTurn))
 # ----------------------------------------#
 # ---------- DEFINE THE AGENTS ---------- # 
 # ----------------------------------------#
-opp1 =agent.Agent('opp1', numGenTypes, numBidsPerTurn)
-michael = agent.Agent('michael', numGenTypes, numBidsPerTurn)
-opp = agent.Agent('opp', numGenTypes, numBidsPerTurn)
+opp1 =agent.Agent('opp1', numGenTypes, numBidsPerTurn, numMovingTurns)
+michael = agent.Agent('michael', numGenTypes, numBidsPerTurn, numMovingTurns)
+opp = agent.Agent('opp', numGenTypes, numBidsPerTurn, numMovingTurns)
 
 agents = [opp, opp1, michael]
 
@@ -48,14 +48,15 @@ allocation = (6, 5, 10)
 costs =      (5.3, 2.8, 6.0) 
 carbon =     (.1, 2.0, 0.0)
 coeff = (.7, .2, .1)
-location = (0,0)
+location = (9,4)
 
 
 opp1.assets = asarray(allocation)
 opp1.costs = asarray(costs)
 opp1.carbon = asarray(carbon)
 opp1.utilityCoeff = asarray(coeff)
-opp1.location = location
+opp1.location[:,0] = asarray(location)
+opp1.ID = 1
 
 # define agent 2 
           # nuc, gas, wind
@@ -70,7 +71,8 @@ opp.assets = asarray(allocation)
 opp.costs = asarray(costs)
 opp.carbon = asarray(carbon)
 opp.utilityCoeff = asarray(coeff)
-opp.location = location
+opp.location[:,0] = asarray(location)
+opp.ID = 2
 
 # define agent 3 
           # nuc, gas, wind
@@ -78,14 +80,15 @@ allocation = (4, 10, 6)
 costs =      (4.8, 2.4, 7.0) 
 carbon =     (.1, 2.0, 0.0)
 coeff = (.7, .2, .1)
-location = (6,9)
+location = (6, 9)
 
 
 michael.assets = asarray(allocation)
 michael.costs = asarray(costs)
 michael.carbon = asarray(carbon)
 michael.utilityCoeff = asarray(coeff)
-michael.location = location
+michael.location[:,0] = asarray(location)
+michael.ID = 3
 
 # create the optimization matrix for each player 
 # 	- this will consist of a matrix buffered by zeros 
@@ -93,57 +96,69 @@ michael.location = location
 for a in agents: 
 	a.supply, a.utilization = agent.optimizationMatrix(a)
 
-#---------------------------------#	
-# --- CREATE THE DEMAND CURVE --- #
-#---------------------------------#
-
-# define demand variables 
-D = sym.symbols('D')
-q = sym.symbols('Q')
-
-demand = population - deps * q
-
-price_supply = arange(0, agents[0].maxAssets() / demandResolution, demandResolution)
-price_supply = [demand.evalf(subs={q:ps}) for ps in price_supply]
 
 #--------------------------------#
 # ------- CREATE GRID ---------- #
 #--------------------------------#
 
 grid = zeros((15, 15, 4))
-randPop = [[random.rand() for x in xrange(15)] for y in xrange(15)]
+randPop = [[25*random.rand() for x in xrange(15)] for y in xrange(15)]
 grid[:,:, 1] = randPop
 
 taxGrid = ones((15,15, numGenTypes))*random.rand()
-
+savedGrid = zeros((15,15,numMovingTurns))
 
 # ------------------------------ #
 # -- BEGIN GRID POINTS SEARCH -- # 
 # ------------------------------ #
 
 for move in range(numMovingTurns):
+	# clear the agent locations
+	print 'players have moved {num} times'.format(num=move)
+	grid[:,:,3] = 0
+	for A in agents:
+		grid[A.location[0, move], A.location[1, move], 3] = A.ID
 
+	random.shuffle(agents)
 	for player in agents:
+
 		# create utility storing matrix
-		utilityMap = zeros((player.searchRadius*2+1 , player.searchRadius*2+1))
+		utilityMap = zeros((player.searchRadius*2+1, player.searchRadius*2+1))
 
 		for i in range(player.searchRadius*2+1): 
 			for j in range(player.searchRadius*2+1):
 
-				population, numPlayers = player.visableGrid(grid, [i,j])
+				# preallocate the matrix 
+				Q = zeros((1, numBidsPerTurn)) 
+				total_utility = zeros((1, numBidsPerTurn))
+				total_revenue = zeros((1, numBidsPerTurn))
+				total_CO2 = zeros((1, numBidsPerTurn))
+				eq_price = zeros((1, numBidsPerTurn))
 
 				# taxes is returned as a tuple (nuclear, gas, wind)
-				taxes = taxGrid[i,j,:].reshape(numGenTypes, 1)
-
+				nearbyAgents = []
+				population, taxes, nearbyAgents = player.visableGrid(grid, taxGrid, [i,j])
+				price_supply = [population, deps]
+				numPlayers = len(nearbyAgents)
+				print nearbyAgents
+				competitors = []
 				# reset the turn counter
-				player.turn = 0
+				for A in agents:
+					A.turn = 0 
+
+					if A.ID in nearbyAgents:
+						competitors.append(A)
+
+
 				for k in xrange(0, numBidsPerTurn-1):
 					# print 'Begin turn %s' % k
 					Q_actual = 0.0
 					CO2_actual = 0.0
 
+					# make new agent list based off location
 					# loop through to find what agent's will produce based on their expectations
-					for A in agents:
+					for A in competitors:
+
 						if k != 0:
 							# update predictive variables
 							A.oppProduction[k, 0] = A.oppProduction[k-1, 0] * A.damping[k-1, 0]
@@ -156,7 +171,7 @@ for move in range(numMovingTurns):
 							A.CO2[k, 0] = dot(A.production[k, :], A.carbon)
 						
 						else:
-							print 'first turn, assuming no damping'
+							# print 'first turn, assuming no damping'
 							A.production[k, :], A.utility[k, 0] = optimizeDone.optimize(A,\
 							 price_supply, taxes, CO2tax, maxCO2, numPlayers, numShuffles, k)
 							A.production_expected[k, 0] = sum(A.production[k, :]) * numPlayers 
@@ -168,13 +183,16 @@ for move in range(numMovingTurns):
 						Q_actual = Q_actual + sum(A.production[k, :])
 						CO2_actual = CO2_actual + A.CO2[k, 0]
 										
-					## FIND THE ACTUAL PRICE
-					eq_price[0, k] = demand.evalf(subs={q:Q_actual})
-					Q[0, k] = Q_actual
-					total_CO2[0, k] = CO2_actual	
+						## FIND THE ACTUAL PRICE
+						Q[0, k] = Q_actual
+						total_CO2[0, k] = CO2_actual
+						population, taxes, nearbyAgents = player.visableGrid(grid, taxGrid, [player.searchRadius,player.searchRadius])
+						price_supply = [population, deps]
+						eq_price[0, k] = price_supply[0] - price_supply[1]*Q[0,k]
 
-					#pdb.set_trace()
-					for A in agents:
+
+					# pdb.set_trace()
+					for A in competitors:
 						if k == 0:
 							A.oppProduction[k, 0] =  Q_actual - sum(A.production[k])
 
@@ -190,20 +208,26 @@ for move in range(numMovingTurns):
 						total_utility[0, k] = A.utility[k] + total_utility[0, k]
 						total_revenue[0, k] = total_revenue[0, k] + A.revenue[k, 0]
 						A.bank = A.bank + A.revenue[k, 0]
-						A.delta[k, 0] =  A.production_expected[k] - Q[0, k] 
-						A.CO2damping(CO2_actual)
-						A.dampingUpdate()
 
+						A.CO2damping(total_CO2[0,k])
+						
+						A.dampingUpdate()
 						A.turnUpdate()
 
 				# store the steady state utility
-				utilityMap[i,j] = total_revenue[-1, 0]
+				utilityMap[i,j] = total_utility[0, -2]
 
 		# pick the best square
-		bestSq = utilityMap.argmax()
+		bestSq = where(utilityMap == utilityMap.max())
 
 		# move towards that square 
-		player.move(bestSq)
+
+		# pdb.set_trace()
+		# store the grid at each point
+		savedGrid[:,:,move] = grid[:,:,3]
+		player.newLocation(bestSq, grid)
+		player.moveUpdate()
+		player.reset()
 
 		## the player has moved, end their turn
 

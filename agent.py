@@ -13,6 +13,7 @@ import sympy as sym
 from numpy import *
 import populationGrowth as pG
 import matplotlib.pylab as plt
+import pdb
 
 class Agent(object):
 	# class for each power plant agent. 
@@ -26,13 +27,15 @@ class Agent(object):
 	""" name, quantity supplied, nuclear, gas, wind, turn)"""
 	
 
-	def __init__(self, name, Nvariables, numTurns):
+	def __init__(self, name,  Nvariables, numTurns, numMoves):
 		self.name = name
 		self.numGenTypes = Nvariables
+		self.numTurns = numTurns
 
 		# default values for floats
 		self.permits = 0 
 		self.bank = 0
+		self.ID = 1
 
 		# variables defined by the agent parameters
 		self.assets = zeros((Nvariables,1))
@@ -41,8 +44,8 @@ class Agent(object):
 		self.costs = zeros((Nvariables,1))
 
 		# location variables
-		self.location = (0,0)
-		self.searchRadius = 3 # default value
+		self.location = zeros((2, numMoves+1))
+		self.searchRadius = 2 # default value
 
 
 		# variables that are stored each turn 
@@ -59,9 +62,10 @@ class Agent(object):
 		self.CO2 = zeros((numTurns, 1))
 		self.zeta = zeros((numTurns, 1))
 		self.revenue = zeros((numTurns, 1))
-
+		self.competition = zeros((numTurns, 1))
 		# turn counter
 		self.turn = 0
+		self.move = 0
 
 
 	def assetValue(self, turn, nuclear, gas, wind):
@@ -107,6 +111,22 @@ class Agent(object):
 	def turnUpdate(self):
 		self.turn = self.turn + 1 
 
+	def moveUpdate(self):
+		self.move = self.move + 1 
+
+	def reset(self):
+		self.delta = zeros((self.numTurns, 1))
+		self.production = zeros((self.numTurns, 3))
+		self.utility = zeros((self.numTurns, 1))
+		self.production_expected = zeros((self.numTurns, 1))
+		self.oppProduction = zeros((self.numTurns, 1))
+		self.damping = zeros((self.numTurns, 1))
+		self.CO2_oppExpected = zeros((self.numTurns, 1))
+		self.CO2 = zeros((self.numTurns, 1))
+		self.zeta = zeros((self.numTurns, 1))
+		self.revenue = zeros((self.numTurns, 1))
+		self.competition = zeros((self.numTurns, 1))
+
 	def dampingUpdate(self):
 		''' will update the production damping coefficient based on the 
 			delta and actual production from the previous production paths '''
@@ -125,8 +145,7 @@ class Agent(object):
 
 		self.zeta[self.turn, 0] = zeta 
 
-
-	def visableGrid(self, grid, testLocation): 
+	def visableGrid(self, grid, taxGrid, testLocation): 
 		''' 
 		handles the geospatial aspects of code
 		returns: 
@@ -141,56 +160,114 @@ class Agent(object):
 		# - FIND THE WORKING GRID SECTION - #
 		# --------------------------------- #
 
-		east = testLocation[0] - self.searchRadius -1 
-		west = testLocation[0] + self.searchRadius
-		north = testLocation[1] + self.searchRadius
-		south = testLocation[1] - self.searchRadius -1
+		centerX = self.location[0, self.move]  + (-self.searchRadius + testLocation[0]) 
+		centerY = self.location[1, self.move]  + (-self.searchRadius + testLocation[1])
+
+		if centerX >= n:
+			centerX = n-1
+		elif centerX <= 0:
+			centerX = 0
+
+		if centerY >= m: 
+			centerY = m-1 
+		elif centerY <= 0:
+			centerY = 0
+
+		# check to wrap matrix
+		west = int(centerX - self.searchRadius -1)
+		east = int(centerX + self.searchRadius+1)
+		north = int(centerY + self.searchRadius+1)
+		south = int(centerY - self.searchRadius -1)
 
 		## ADD FEATURE
 		# check to see if the location is outside the grid 
-		if north > m:
-			north = m 
-		if south < 0:
+		if north >= m:
+			north = m-1 
+		if south <= 0:
 			south = 0 
-		if east < 0:
-			east = 0
-		if west > n:
-			west = n
+		if east >= n:
+			east = n-1
+		if west <= 0:
+			west = 0
 
- 		visableGrid = grid[east:west, south:north]
+		# pdb.set_trace()
+ 		visableGrid = grid[west:east, south:north, :]
 
  		# find properties of the working grid
  		population = sum(visableGrid[:,:, 1])
- 		competition = sum(visableGrid[:,:, 3])
 
+ 		# find the agents nearby 
+ 		agentLoc = nonzero(visableGrid[:,:,3])
+ 		nearbyAgentsID = []
 
- 		return population, competition
+ 		if len(agentLoc[0]) != 0:
+ 			for pt in range(len(agentLoc[0])):
 
- 	def move(self, bestSquare):
+	 			nearbyAgentsID.append(visableGrid[agentLoc[0][pt], agentLoc[1][pt], 3])
+	 	else:
+	 		pdb.set_trace()
+
+ 		taxes = taxGrid[centerX, centerY, :]
+
+ 		if population == 0:
+ 			pdb.set_trace()
+
+ 		return population, taxes, nearbyAgentsID
+
+ 	def newLocation(self, square, grid):
  		''' 
  		determines how agents will move
  		currently, they will always move up/down
  		before moving left/right
  		'''
+ 		[m,n,o] = shape(grid)
+ 		bestSquare = asarray((0,0))
 
- 		direction = asarray(self.radius,self.radius) - bestSquare
+ 		bestSquare[0] = square[0][0]
+ 		bestSquare[1] = square[1][0]
 
+ 		# convert the submatrix to the larger matrix
+ 		bestSquare[0] = bestSquare[0] + self.location[0, self.move] - self.searchRadius
+		bestSquare[1] = bestSquare[1] + self.location[1, self.move] - self.searchRadius
+ 		direction = -self.location[:, self.move] + bestSquare
+
+ 		# pdb.set_trace()
  		if direction[1] > 0:
  			# move up
- 			self.location[1] = self.location[1] +1 
- 		elif direction[1] < 0: 
- 			self.location[1] = self.location[1] - 1 
+ 			self.location[0, self.move+1] = self.location[0, self.move] 
 
- 		else:
- 			# needs to move east/west
+ 			if self.location[1, self.move] + 1 < m:
+	 			self.location[1, self.move+1] = self.location[1,self.move] + 1
+	 		else:
+	 			self.location[1, self.move+1] = self.location[1,self.move]
+
+
+ 		elif direction[1] < 0: 
+ 			self.location[0, self.move+1] = self.location[0, self.move] 
+
+ 			if self.location[1, self.move] - 1 > 0:
+ 				self.location[1, self.move+1] = self.location[1,self.move] - 1 
+	 		else:
+	 			self.location[1, self.move+1] = self.location[1,self.move] 
+
+
+ 		else: 	# needs to move east/west
  			if direction[0] > 0:
  				# move west
- 				self.location[0] = self.location[0] +1 
+ 				self.location[1, self.move+1] = self.location[1, self.move] 
+
+ 				if self.location[0, self.move] +1 < n:
+	 				self.location[0,self.move+1] = self.location[0,self.move] +1 
+	 			else:
+	 				self.location[0,self.move+1] = self.location[0,self.move] 
+
  			elif direction[0] < 0:
- 				self.location[0] = self.location[0] -1 
- 			else:
- 				# already at optimal
- 				pass
+ 				self.location[1, self.move+1] = self.location[1, self.move] 
+
+ 				if self.location[0,self.move] -1 > 0:
+	 				self.location[0,self.move+1] = self.location[0,self.move] -1  
+	 			else:
+	 				self.location[0,self.move+1] = self.location[0,self.move]
 
 
 def agent(turn, population, supplyEps, demandEps):
